@@ -1,0 +1,38 @@
+.root {
+  display: flex;
+  width: 100%;
+  height: 32px;
+  position: relative;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  min-width: 0;
+}
+.root:hover {
+  cursor: pointer;
+}
+.rowItem:global(.__wab_instance) {
+  max-width: 100%;
+  height: 32px;
+}
+.svg {
+  object-fit: cover;
+  width: 16px;
+  height: 16px;
+}
+.iconButton__jphC:global(.__wab_instance) {
+  max-width: 100%;
+}
+.svg__sVr6G {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}
+.svg__i8Su {
+  display: flex;
+  position: relative;
+  object-fit: cover;
+  height: 1em;
+}

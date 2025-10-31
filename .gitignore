@@ -1,0 +1,45 @@
+**/*.swp
+**/.claude/settings.local.json
+**/.idea/libraries/Generated_files.xml
+**/.idea/sqldialects.xml
+**/.idea/workspace.xml
+# Local .terraform directories
+**/.terraform/*
+**/.vscode/
+**/api/temp
+**/api/tsc
+*.pyc
+# .tfstate files
+*.tfstate
+*.tfstate.*
+.DS_Store
+.cache
+.cache-loader/
+.direnv
+.env
+.eslintcache
+.idea
+.ipynb_checkpoints/
+.venv/
+/.direnv/
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+.terragrunt-cache/
+**/backend.tf
+.terraform
+# Typedoc output
+/platform/sub/typedoc-*/
+/platform/sub/typedoc.json
+/platform/sub/typedoc.json.gz
+/platform/sub/typedoc/
+bower_components/
+node_modules/
+storybook-static/
+.nx/
+# ignore decrypted yaml files by sops
+*.dec.*
+dist/
+# Playwright test results
+test-results/
+playwright-report/
