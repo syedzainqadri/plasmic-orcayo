@@ -1,0 +1,755 @@
+yarn run v1.22.22
+$ cd platform/wab && yarn dev
+$ bash tools/dev.bash
+[react-web] warning package.json: No license field
+[live-frame] warning package.json: No license field
+[canvas] warning package.json: No license field
+[react-web] warning react-web-bundle: No license field
+[live-frame] warning live-frame: No license field
+[react-web] [1/4] Resolving packages...
+[host] $ bash tools/host-server.bash
+[live-frame] [1/4] Resolving packages...
+[loader-html] [1/4] Resolving packages...
+[css] $ npm run build-css && sass src/wab/styles/canvas/:dev-build/static/styles/canvas/ -w
+[canvas] warning canvas-packages: No license field
+[backend] $ bash tools/backend-server.bash
+[canvas] [1/4] Resolving packages...
+[sub] [1/4] Resolving packages...
+[loader-html] success Already up-to-date.
+[frontend] $ bash tools/dev-server.bash dev
+[react-web] success Already up-to-date.
+[live-frame] success Already up-to-date.
+[sub] success Already up-to-date.
+[canvas] success Already up-to-date.
+[canvas] $ node ./makePkgTypes.js
+[loader-html] $ rm -rf build/ && NODE_ENV=production rollup -c
+[react-web] warning package.json: No license field
+[live-frame] warning package.json: No license field
+[react-web] $ rollup -c rollup.config.js --watch
+[live-frame] $ rollup -c rollup.config.js --watch
+[sub] $ webpack --progress --watch --config webpack.dev.config.js
+[host] $ /Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/.bin/http-server build -p 3005
+[css] 
+[css] > wab@0.0.1 build-css
+[css] > sass src/wab/styles/canvas/:dev-build/static/styles/canvas/
+[css] 
+[frontend] $ /Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/.bin/rsbuild dev
+[css] Sass is watching for changes. Press Ctrl-C to stop.
+[css] 
+[loader-html] 
+[loader-html] src/index.ts → build, build/loader-hydrate.js...
+[loader-html] (!) Module level directives cause errors when bundled, 'use client' was ignored.
+[loader-html] node_modules/@plasmicapp/loader-react/dist/index.esm.js (1:0)
+[loader-html] 1: "use client";
+[loader-html]    ^
+[loader-html] 2: var __defProp = Object.defineProperty;
+[loader-html] 3: var __defProps = Object.defineProperties;
+[loader-html] (!) Module level directives cause errors when bundled, 'use client' was ignored.
+[loader-html] node_modules/@plasmicapp/query/dist/index.esm.js (1:0)
+[loader-html] 1: "use client";
+[loader-html]    ^
+[loader-html] 2: var __defProp = Object.defineProperty;
+[loader-html] 3: var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+[loader-html] (!) Module level directives cause errors when bundled, 'use client' was ignored.
+[loader-html] node_modules/@plasmicapp/data-sources-context/dist/index.esm.js (1:0)
+[loader-html] 1: "use client";
+[loader-html]    ^
+[loader-html] 2: 
+[loader-html] 3: // src/index.tsx
+[loader-html] (!) Module level directives cause errors when bundled, 'use client' was ignored.
+[loader-html] node_modules/@plasmicapp/host/dist/host.esm.js (1:0)
+[loader-html] 1: 'use client';
+[loader-html]    ^
+[loader-html] 2: import * as PlasmicQuery from '@plasmicapp/query';
+[loader-html] 3: import * as React from 'react';
+[react-web] [4mrollup v2.79.1[24m
+[react-web] [36mbundles [1msrc/index.ts[22m → [1mbuild/client.js[22m...[39m
+[react-web] babelHelpers: 'bundled' option was used by default. It is recommended to configure this option explicitly, read more here: https://github.com/rollup/plugins/tree/master/packages/babel#babelhelpers
+[live-frame] rollup v2.38.5
+[live-frame] bundles src/index.ts → build/client.js...
+[live-frame] [!] (plugin postcss) Error: EPERM: operation not permitted, open '/Users/xain/Documents/GitHub/package.json'
+[live-frame] src/live.css
+[live-frame] Error: EPERM: operation not permitted, open '/Users/xain/Documents/GitHub/package.json'
+[live-frame] 
+[host] Starting up http-server, serving build
+[host] 
+[host] http-server version: 14.1.1
+[host] 
+[host] http-server settings: 
+[host] CORS: disabled
+[host] Cache: 3600 seconds
+[host] Connection Timeout: 120 seconds
+[host] Directory Listings: visible
+[host] AutoIndex: visible
+[host] Serve GZIP Files: false
+[host] Serve Brotli Files: false
+[host] Default File Extension: none
+[host] 
+[host] Available on:
+[host]   http://127.0.0.1:3005
+[host]   http://192.168.0.103:3005
+[host] Hit CTRL-C to stop the server
+[host] 
+[sub] <s> [webpack.Progress] 3% setup watch run
+[sub] <s> [webpack.Progress] 3% setup watch run webpack-cli
+[sub] <s> [webpack.Progress] 3% setup watch run
+[react-web] [1m[33m(!) Error when using sourcemap for reporting an error: Can't resolve original location of error.[39m[22m
+[react-web] [1mnode_modules/@plasmicapp/react-web/dist/react-web.esm.js (1:0)[22m
+[react-web] [1m[33m(!) Module level directives cause errors when bundled, 'use client' was ignored.[39m[22m
+[react-web] [1mnode_modules/@plasmicapp/react-web/dist/react-web.esm.js (1:0)[22m
+[react-web] [90m1: 'use client';
+[react-web]    ^
+[react-web] 2: 
+[react-web] 3: import classNames$1 from 'classnames';[39m
+[sub] <s> [webpack.Progress] 4% setup normal module factory
+[sub] <s> [webpack.Progress] 4% setup normal module factory
+[sub] <s> [webpack.Progress] 5% setup context module factory
+[sub] <s> [webpack.Progress] 5% setup context module factory
+[sub] <s> [webpack.Progress] 6% setup before compile
+[sub] <s> [webpack.Progress] 6% setup before compile ProgressPlugin
+[sub] <s> [webpack.Progress] 6% setup before compile
+[sub] <s> [webpack.Progress] 7% setup compile
+[sub] <s> [webpack.Progress] 7% setup compile ExternalsPlugin
+[sub] <s> [webpack.Progress] 7% setup compile
+[sub] <s> [webpack.Progress] 8% setup compilation
+[sub] <s> [webpack.Progress] 8% setup compilation ArrayPushCallbackChunkFormatPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation JsonpChunkLoadingPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation StartupChunkDependenciesPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation ImportScriptsChunkLoadingPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation WorkerPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation SplitChunksPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation ResolverCachePlugin
+[sub] <s> [webpack.Progress] 8% setup compilation
+[sub] <s> [webpack.Progress] 9% setup compilation
+[sub] <s> [webpack.Progress] 9% setup compilation ProgressPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ExternalsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ChunkPrefetchPreloadPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ModuleInfoHeaderPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation JavascriptModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation JsonModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation AssetModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation EntryPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RuntimePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation InferAsyncModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DataUriPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation FileUriPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation CompatibilityPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation HarmonyModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation AMDPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireJsStuffPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation CommonJsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation LoaderPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation LoaderPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation NodeStuffPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation APIPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ExportsInfoApiPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation WebpackIsIncludedPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ConstPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation UseStrictPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireIncludePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireEnsurePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireContextPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ImportPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ImportMetaContextPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation SystemPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ImportMetaPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation URLPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefaultStatsFactoryPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefaultStatsPresetPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefaultStatsPrinterPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation JavascriptMetaInfoPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation EnsureChunkConditionsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RemoveEmptyChunksPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation MergeDuplicateChunksPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation SideEffectsFlagPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation FlagDependencyExportsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation NamedModuleIdsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation NamedChunkIdsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefinePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation TemplatedPathPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RecordIdsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation WarnCaseSensitiveModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation
+[sub] <s> [webpack.Progress] 10% building
+[sub] <s> [webpack.Progress] 10% building 0/1 entries 0/0 dependencies 0/0 modules
+[frontend]   Rsbuild v1.3.22
+[frontend] 
+[sub] <s> [webpack.Progress] 10% building import loader ./node_modules/awesome-typescript-loader/dist/entry.js
+[react-web] [1m[33m(!) Error when using sourcemap for reporting an error: Can't resolve original location of error.[39m[22m
+[react-web] [1mnode_modules/@plasmicapp/data-sources-context/dist/index.esm.js (1:0)[22m
+[react-web] [1m[33m(!) Module level directives cause errors when bundled, 'use client' was ignored.[39m[22m
+[react-web] [1mnode_modules/@plasmicapp/data-sources-context/dist/index.esm.js (1:0)[22m
+[react-web] [90m1: "use client";
+[react-web]    ^
+[react-web] 2: 
+[react-web] 3: // src/index.tsx[39m
+[sub] <s> [webpack.Progress] 10% building 0/1 entries 1/1 dependencies 0/1 modules
+[sub] ℹ ｢atl｣: Using typescript@4.2.4 from typescript
+[sub] ℹ ｢atl｣: Using tsconfig.json from /Users/xain/Documents/GitHub/plasmic/platform/sub/tsconfig.json
+[frontend] Starting rsbuild...
+[frontend] - commitHash: 6f275e
+[frontend] - buildEnv: development
+[frontend] - publicUrl: http://localhost:3003
+[frontend] - port: 3003
+[frontend] - backendPort: 3004
+[frontend] 
+[frontend] error   Failed to start dev server.
+[frontend] error   EPERM: operation not permitted, open '/Users/xain/Documents/GitHub/package.json'
+[frontend]     at async open (node:internal/fs/promises:633:25)
+[frontend]     at async readFile (node:internal/fs/promises:1242:14)
+[frontend]     at async Object.search (/Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/@rsbuild/core/compiled/postcss-load-config/index.js:152:40)
+[frontend]     at async getPostcssLoaderOptions (file:///Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/@rsbuild/core/dist/index.js:2580:42)
+[frontend]     at async Object.handler (file:///Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/@rsbuild/core/dist/index.js:2667:52)
+[frontend]     at async Object.callChain (file:///Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/@rsbuild/core/dist/index.js:1673:30)
+[frontend]     at async modifyBundlerChain (file:///Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/@rsbuild/core/dist/index.js:2113:133)
+[frontend]     at async generateRspackConfig (file:///Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/@rsbuild/core/dist/index.js:4658:268)
+[frontend]     at async Promise.all (index 0)
+[frontend]     at async initConfigs (file:///Users/xain/Documents/GitHub/plasmic/platform/wab/node_modules/@rsbuild/core/dist/index.js:4804:25)
+[frontend] error Command failed with exit code 1.
+[frontend] info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[frontend] error Command failed with exit code 1.
+[frontend] info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+[frontend] TRANSPILER=swc nice -n +30 yarn start exited with code 1
+[loader-html] (!) Use of eval is strongly discouraged
+[loader-html] https://rollupjs.org/guide/en/#avoiding-eval
+[loader-html] node_modules/@plasmicapp/loader-core/dist/index.esm.js
+[loader-html] 164:       } catch (err) {
+[loader-html] 165:         try {
+[loader-html] 166:           return eval("require")(dep);
+[loader-html]                       ^
+[loader-html] 167:         } catch (e) {
+[loader-html] 168:           throw err;
+[loader-html] created build, build/loader-hydrate.js in 6.8s
+[loader-html] cd ../loader-html-hydrate/; yarn; nice -n +30 yarn build & exited with code 0
+[react-web] [1m[33m(!) Circular dependencies[39m[22m
+[react-web] node_modules/@internationalized/date/dist/CalendarDate.module.js -> node_modules/@internationalized/date/dist/manipulation.module.js -> node_modules/@internationalized/date/dist/conversion.module.js -> node_modules/@internationalized/date/dist/CalendarDate.module.js
+[react-web] node_modules/@internationalized/date/dist/manipulation.module.js -> node_modules/@internationalized/date/dist/conversion.module.js -> node_modules/@internationalized/date/dist/manipulation.module.js
+[react-web] node_modules/@internationalized/date/dist/CalendarDate.module.js -> node_modules/@internationalized/date/dist/manipulation.module.js -> node_modules/@internationalized/date/dist/conversion.module.js -> node_modules/@internationalized/date/dist/GregorianCalendar.module.js -> node_modules/@internationalized/date/dist/CalendarDate.module.js
+[react-web] node_modules/@internationalized/date/dist/conversion.module.js -> node_modules/@internationalized/date/dist/queries.module.js -> node_modules/@internationalized/date/dist/conversion.module.js
+[react-web] node_modules/@internationalized/date/dist/CalendarDate.module.js -> node_modules/@internationalized/date/dist/string.module.js -> node_modules/@internationalized/date/dist/CalendarDate.module.js
+[react-web] [1m[33m(!) Plugin replace: @rollup/plugin-replace: 'preventAssignment' currently defaults to false. It is recommended to set this option to `true`, as the next major version will default this option to `true`.[39m[22m
+[react-web] [32mcreated [1mbuild/client.js[22m in [1m7.6s[22m[39m
+[sub] <s> [webpack.Progress] 10% building 0/1 entries 1/2 dependencies 0/1 modules
+[sub] <s> [webpack.Progress] 10% building import loader ./node_modules/source-map-loader/dist/cjs.js
+[sub] <s> [webpack.Progress] 10% building 0/1 entries 4/4 dependencies 0/4 modules
+[sub] <s> [webpack.Progress] 10% building 0/1 entries 16/18 dependencies 6/11 modules
+[sub] <s> [webpack.Progress] 65% building 1/1 entries 24/24 dependencies 15/15 modules
+[sub] <s> [webpack.Progress] 65% building
+[sub] <s> [webpack.Progress] 69% building finish
+[sub] <s> [webpack.Progress] 69% building finish
+[sub] <s> [webpack.Progress] 70% sealing finish module graph
+[sub] <s> [webpack.Progress] 70% sealing finish module graph ResolverCachePlugin
+[sub] <s> [webpack.Progress] 70% sealing finish module graph InferAsyncModulesPlugin
+[sub] <s> [webpack.Progress] 70% sealing finish module graph FlagDependencyExportsPlugin
+[sub] <s> [webpack.Progress] 70% sealing finish module graph
+[sub] <s> [webpack.Progress] 70% sealing plugins
+[sub] <s> [webpack.Progress] 70% sealing plugins WarnCaseSensitiveModulesPlugin
+[sub] <s> [webpack.Progress] 70% sealing plugins
+[sub] <s> [webpack.Progress] 71% sealing dependencies optimization
+[sub] <s> [webpack.Progress] 71% sealing dependencies optimization SideEffectsFlagPlugin
+[sub] <s> [webpack.Progress] 71% sealing dependencies optimization
+[sub] <s> [webpack.Progress] 71% sealing after dependencies optimization
+[sub] <s> [webpack.Progress] 71% sealing after dependencies optimization
+[sub] <s> [webpack.Progress] 72% sealing chunk graph
+[sub] <s> [webpack.Progress] 72% sealing chunk graph
+[sub] <s> [webpack.Progress] 73% sealing after chunk graph
+[sub] <s> [webpack.Progress] 73% sealing after chunk graph
+[sub] <s> [webpack.Progress] 73% sealing optimizing
+[sub] <s> [webpack.Progress] 73% sealing optimizing
+[sub] <s> [webpack.Progress] 74% sealing module optimization
+[sub] <s> [webpack.Progress] 74% sealing module optimization
+[sub] <s> [webpack.Progress] 75% sealing after module optimization
+[sub] <s> [webpack.Progress] 75% sealing after module optimization
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization EnsureChunkConditionsPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization RemoveEmptyChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization MergeDuplicateChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization SplitChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization RemoveEmptyChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization
+[sub] <s> [webpack.Progress] 76% sealing after chunk optimization
+[sub] <s> [webpack.Progress] 76% sealing after chunk optimization
+[sub] <s> [webpack.Progress] 77% sealing module and chunk tree optimization
+[sub] <s> [webpack.Progress] 77% sealing module and chunk tree optimization
+[sub] <s> [webpack.Progress] 77% sealing after module and chunk tree optimization
+[sub] <s> [webpack.Progress] 77% sealing after module and chunk tree optimization
+[sub] <s> [webpack.Progress] 78% sealing chunk modules optimization
+[sub] <s> [webpack.Progress] 78% sealing chunk modules optimization
+[sub] <s> [webpack.Progress] 78% sealing after chunk modules optimization
+[sub] <s> [webpack.Progress] 78% sealing after chunk modules optimization
+[sub] <s> [webpack.Progress] 79% sealing module reviving
+[sub] <s> [webpack.Progress] 79% sealing module reviving RecordIdsPlugin
+[sub] <s> [webpack.Progress] 79% sealing module reviving
+[sub] <s> [webpack.Progress] 80% sealing before module ids
+[sub] <s> [webpack.Progress] 80% sealing before module ids
+[sub] <s> [webpack.Progress] 80% sealing module ids
+[sub] <s> [webpack.Progress] 80% sealing module ids NamedModuleIdsPlugin
+[sub] <s> [webpack.Progress] 80% sealing module ids
+[sub] <s> [webpack.Progress] 81% sealing module id optimization
+[sub] <s> [webpack.Progress] 81% sealing module id optimization
+[sub] <s> [webpack.Progress] 82% sealing module id optimization
+[sub] <s> [webpack.Progress] 82% sealing module id optimization
+[sub] <s> [webpack.Progress] 82% sealing chunk reviving
+[sub] <s> [webpack.Progress] 82% sealing chunk reviving RecordIdsPlugin
+[sub] <s> [webpack.Progress] 82% sealing chunk reviving
+[sub] <s> [webpack.Progress] 83% sealing before chunk ids
+[sub] <s> [webpack.Progress] 83% sealing before chunk ids
+[sub] <s> [webpack.Progress] 84% sealing chunk ids
+[sub] <s> [webpack.Progress] 84% sealing chunk ids NamedChunkIdsPlugin
+[sub] <s> [webpack.Progress] 84% sealing chunk ids
+[sub] <s> [webpack.Progress] 84% sealing chunk id optimization
+[sub] <s> [webpack.Progress] 84% sealing chunk id optimization
+[sub] <s> [webpack.Progress] 85% sealing after chunk id optimization
+[sub] <s> [webpack.Progress] 85% sealing after chunk id optimization
+[sub] <s> [webpack.Progress] 86% sealing record modules
+[sub] <s> [webpack.Progress] 86% sealing record modules RecordIdsPlugin
+[sub] <s> [webpack.Progress] 86% sealing record modules
+[sub] <s> [webpack.Progress] 86% sealing record chunks
+[sub] <s> [webpack.Progress] 86% sealing record chunks RecordIdsPlugin
+[sub] <s> [webpack.Progress] 86% sealing record chunks
+[sub] <s> [webpack.Progress] 87% sealing module hashing
+[sub] <s> [webpack.Progress] 87% sealing module hashing
+[sub] <s> [webpack.Progress] 87% sealing code generation
+[sub] <s> [webpack.Progress] 87% sealing code generation
+[sub] <s> [webpack.Progress] 88% sealing runtime requirements
+[sub] <s> [webpack.Progress] 88% sealing runtime requirements
+[sub] <s> [webpack.Progress] 89% sealing hashing
+[sub] <s> [webpack.Progress] 89% sealing hashing
+[sub] <s> [webpack.Progress] 89% sealing after hashing
+[sub] <s> [webpack.Progress] 89% sealing after hashing
+[sub] <s> [webpack.Progress] 90% sealing record hash
+[sub] <s> [webpack.Progress] 90% sealing record hash
+[sub] <s> [webpack.Progress] 91% sealing module assets processing
+[sub] <s> [webpack.Progress] 91% sealing module assets processing
+[sub] <s> [webpack.Progress] 91% sealing chunk assets processing
+[sub] <s> [webpack.Progress] 91% sealing chunk assets processing
+[sub] <s> [webpack.Progress] 92% sealing asset processing
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin client.js generate SourceMap
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin client.js generated SourceMap
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin resolve sources
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin client.js attach SourceMap
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin client.js attached SourceMap
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin resolve sources
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing
+[sub] <s> [webpack.Progress] 93% sealing after asset optimization
+[sub] <s> [webpack.Progress] 93% sealing after asset optimization
+[sub] <s> [webpack.Progress] 93% sealing recording
+[sub] <s> [webpack.Progress] 93% sealing recording
+[sub] <s> [webpack.Progress] 94% sealing after seal
+[sub] <s> [webpack.Progress] 94% sealing after seal
+[sub] ℹ ｢atl｣: Checking started in a separate process...
+[sub] ℹ ｢atl｣: Time: 363ms
+[sub] <s> [webpack.Progress] 95% emitting emit
+[sub] <s> [webpack.Progress] 95% emitting emit
+[sub] <s> [webpack.Progress] 98% emitting after emit
+[sub] <s> [webpack.Progress] 98% emitting after emit
+[sub] <s> [webpack.Progress] 99% done plugins
+[sub] <s> [webpack.Progress] 99% done plugins
+[sub] <s> [webpack.Progress] 99% 
+[sub] 
+[sub] asset client.js 1.26 MiB [compared for emit] (name: client) 1 related asset
+[sub] runtime modules 2.18 KiB 6 modules
+[sub] modules by path ./node_modules/ 1.24 MiB
+[sub]   modules by path ./node_modules/react/ 169 KiB 6 modules
+[sub]   modules by path ./node_modules/react-dom/ 1010 KiB
+[sub]     ./node_modules/react-dom/client.js 619 bytes [built] [code generated]
+[sub]     + 2 modules
+[sub]   modules by path ./node_modules/@plasmicapp/ 31.1 KiB
+[sub]     ./node_modules/@plasmicapp/host/dist/host.esm.js 24.6 KiB [built] [code generated]
+[sub]     ./node_modules/@plasmicapp/query/dist/index.esm.js 6.42 KiB [built] [code generated]
+[sub]   modules by path ./node_modules/scheduler/ 17.3 KiB
+[sub]     ./node_modules/scheduler/index.js 198 bytes [built] [code generated]
+[sub]     ./node_modules/scheduler/cjs/scheduler.development.js 17.1 KiB [built] [code generated]
+[sub]   ./node_modules/swr/dist/index.mjs 45.2 KiB [built] [code generated]
+[sub] ./src/index.tsx 476 bytes [built] [code generated]
+[sub] dev (webpack 5.102.0) compiled successfully in 8394 ms
+[sub] <s> [webpack.Progress] 99% cache store build dependencies
+[sub] <s> [webpack.Progress] 99% cache store build dependencies
+[sub] <s> [webpack.Progress] 99% cache begin idle
+[sub] <s> [webpack.Progress] 99% cache begin idle
+[sub] <s> [webpack.Progress] 100% 
+[sub] 
+[sub] <s> [webpack.Progress] 0% 
+[sub] 
+[sub] <s> [webpack.Progress] 1% cache end idle
+[sub] <s> [webpack.Progress] 1% cache end idle
+[sub] <s> [webpack.Progress] 3% setup watch run
+[sub] <s> [webpack.Progress] 3% setup watch run webpack-cli
+[sub] <s> [webpack.Progress] 3% setup watch run at-loader
+[sub] <s> [webpack.Progress] 3% setup watch run
+[sub] <s> [webpack.Progress] 4% setup normal module factory
+[sub] <s> [webpack.Progress] 4% setup normal module factory
+[sub] <s> [webpack.Progress] 5% setup context module factory
+[sub] <s> [webpack.Progress] 5% setup context module factory
+[sub] <s> [webpack.Progress] 6% setup before compile
+[sub] <s> [webpack.Progress] 6% setup before compile ProgressPlugin
+[sub] <s> [webpack.Progress] 6% setup before compile
+[sub] <s> [webpack.Progress] 7% setup compile
+[sub] <s> [webpack.Progress] 7% setup compile ExternalsPlugin
+[sub] <s> [webpack.Progress] 7% setup compile
+[sub] <s> [webpack.Progress] 8% setup compilation
+[sub] <s> [webpack.Progress] 8% setup compilation ArrayPushCallbackChunkFormatPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation JsonpChunkLoadingPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation StartupChunkDependenciesPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation ImportScriptsChunkLoadingPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation WorkerPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation SplitChunksPlugin
+[sub] <s> [webpack.Progress] 8% setup compilation ResolverCachePlugin
+[sub] <s> [webpack.Progress] 8% setup compilation
+[sub] <s> [webpack.Progress] 9% setup compilation
+[sub] <s> [webpack.Progress] 9% setup compilation ProgressPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ExternalsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ChunkPrefetchPreloadPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ModuleInfoHeaderPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation JavascriptModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation JsonModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation AssetModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation EntryPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RuntimePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation InferAsyncModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DataUriPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation FileUriPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation CompatibilityPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation HarmonyModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation AMDPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireJsStuffPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation CommonJsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation LoaderPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation LoaderPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation NodeStuffPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation APIPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ExportsInfoApiPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation WebpackIsIncludedPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ConstPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation UseStrictPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireIncludePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireEnsurePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RequireContextPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ImportPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ImportMetaContextPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation SystemPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation ImportMetaPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation URLPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefaultStatsFactoryPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefaultStatsPresetPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefaultStatsPrinterPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation JavascriptMetaInfoPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation EnsureChunkConditionsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RemoveEmptyChunksPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation MergeDuplicateChunksPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation SideEffectsFlagPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation FlagDependencyExportsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation NamedModuleIdsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation NamedChunkIdsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation DefinePlugin
+[sub] <s> [webpack.Progress] 9% setup compilation TemplatedPathPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation RecordIdsPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation WarnCaseSensitiveModulesPlugin
+[sub] <s> [webpack.Progress] 9% setup compilation
+[sub] <s> [webpack.Progress] 10% building
+[sub] <s> [webpack.Progress] 10% building 0/1 entries 0/0 dependencies 0/0 modules
+[sub] <s> [webpack.Progress] 64% building 1/1 entries 1/1 dependencies 15/1 modules
+[sub] <s> [webpack.Progress] 65% building
+[sub] <s> [webpack.Progress] 69% building finish
+[sub] <s> [webpack.Progress] 69% building finish
+[sub] <s> [webpack.Progress] 70% sealing finish module graph
+[sub] <s> [webpack.Progress] 70% sealing finish module graph ResolverCachePlugin
+[sub] <s> [webpack.Progress] 70% sealing finish module graph InferAsyncModulesPlugin
+[sub] <s> [webpack.Progress] 70% sealing finish module graph FlagDependencyExportsPlugin
+[sub] <s> [webpack.Progress] 70% sealing finish module graph
+[sub] <s> [webpack.Progress] 70% sealing plugins
+[sub] <s> [webpack.Progress] 70% sealing plugins WarnCaseSensitiveModulesPlugin
+[sub] <s> [webpack.Progress] 70% sealing plugins
+[sub] <s> [webpack.Progress] 71% sealing dependencies optimization
+[sub] <s> [webpack.Progress] 71% sealing dependencies optimization SideEffectsFlagPlugin
+[sub] <s> [webpack.Progress] 71% sealing dependencies optimization
+[sub] <s> [webpack.Progress] 71% sealing after dependencies optimization
+[sub] <s> [webpack.Progress] 71% sealing after dependencies optimization
+[sub] <s> [webpack.Progress] 72% sealing chunk graph
+[sub] <s> [webpack.Progress] 72% sealing chunk graph
+[sub] <s> [webpack.Progress] 73% sealing after chunk graph
+[sub] <s> [webpack.Progress] 73% sealing after chunk graph
+[sub] <s> [webpack.Progress] 73% sealing optimizing
+[sub] <s> [webpack.Progress] 73% sealing optimizing
+[sub] <s> [webpack.Progress] 74% sealing module optimization
+[sub] <s> [webpack.Progress] 74% sealing module optimization
+[sub] <s> [webpack.Progress] 75% sealing after module optimization
+[sub] <s> [webpack.Progress] 75% sealing after module optimization
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization EnsureChunkConditionsPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization RemoveEmptyChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization MergeDuplicateChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization SplitChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization RemoveEmptyChunksPlugin
+[sub] <s> [webpack.Progress] 75% sealing chunk optimization
+[sub] <s> [webpack.Progress] 76% sealing after chunk optimization
+[sub] <s> [webpack.Progress] 76% sealing after chunk optimization
+[sub] <s> [webpack.Progress] 77% sealing module and chunk tree optimization
+[sub] <s> [webpack.Progress] 77% sealing module and chunk tree optimization
+[sub] <s> [webpack.Progress] 77% sealing after module and chunk tree optimization
+[sub] <s> [webpack.Progress] 77% sealing after module and chunk tree optimization
+[sub] <s> [webpack.Progress] 78% sealing chunk modules optimization
+[sub] <s> [webpack.Progress] 78% sealing chunk modules optimization
+[sub] <s> [webpack.Progress] 78% sealing after chunk modules optimization
+[sub] <s> [webpack.Progress] 78% sealing after chunk modules optimization
+[sub] <s> [webpack.Progress] 79% sealing module reviving
+[sub] <s> [webpack.Progress] 79% sealing module reviving RecordIdsPlugin
+[sub] <s> [webpack.Progress] 79% sealing module reviving
+[sub] <s> [webpack.Progress] 80% sealing before module ids
+[sub] <s> [webpack.Progress] 80% sealing before module ids
+[sub] <s> [webpack.Progress] 80% sealing module ids
+[sub] <s> [webpack.Progress] 80% sealing module ids NamedModuleIdsPlugin
+[sub] <s> [webpack.Progress] 80% sealing module ids
+[sub] <s> [webpack.Progress] 81% sealing module id optimization
+[sub] <s> [webpack.Progress] 81% sealing module id optimization
+[sub] <s> [webpack.Progress] 82% sealing module id optimization
+[sub] <s> [webpack.Progress] 82% sealing module id optimization
+[sub] <s> [webpack.Progress] 82% sealing chunk reviving
+[sub] <s> [webpack.Progress] 82% sealing chunk reviving RecordIdsPlugin
+[sub] <s> [webpack.Progress] 82% sealing chunk reviving
+[sub] <s> [webpack.Progress] 83% sealing before chunk ids
+[sub] <s> [webpack.Progress] 83% sealing before chunk ids
+[sub] <s> [webpack.Progress] 84% sealing chunk ids
+[sub] <s> [webpack.Progress] 84% sealing chunk ids NamedChunkIdsPlugin
+[sub] <s> [webpack.Progress] 84% sealing chunk ids
+[sub] <s> [webpack.Progress] 84% sealing chunk id optimization
+[sub] <s> [webpack.Progress] 84% sealing chunk id optimization
+[sub] <s> [webpack.Progress] 85% sealing after chunk id optimization
+[sub] <s> [webpack.Progress] 85% sealing after chunk id optimization
+[sub] <s> [webpack.Progress] 86% sealing record modules
+[sub] <s> [webpack.Progress] 86% sealing record modules RecordIdsPlugin
+[sub] <s> [webpack.Progress] 86% sealing record modules
+[sub] <s> [webpack.Progress] 86% sealing record chunks
+[sub] <s> [webpack.Progress] 86% sealing record chunks RecordIdsPlugin
+[sub] <s> [webpack.Progress] 86% sealing record chunks
+[sub] <s> [webpack.Progress] 87% sealing module hashing
+[sub] <s> [webpack.Progress] 87% sealing module hashing
+[sub] <s> [webpack.Progress] 87% sealing code generation
+[sub] <s> [webpack.Progress] 87% sealing code generation
+[sub] <s> [webpack.Progress] 88% sealing runtime requirements
+[sub] <s> [webpack.Progress] 88% sealing runtime requirements
+[sub] <s> [webpack.Progress] 89% sealing hashing
+[sub] <s> [webpack.Progress] 89% sealing hashing
+[sub] <s> [webpack.Progress] 89% sealing after hashing
+[sub] <s> [webpack.Progress] 89% sealing after hashing
+[sub] <s> [webpack.Progress] 90% sealing record hash
+[sub] <s> [webpack.Progress] 90% sealing record hash
+[sub] <s> [webpack.Progress] 91% sealing module assets processing
+[sub] <s> [webpack.Progress] 91% sealing module assets processing
+[sub] <s> [webpack.Progress] 91% sealing chunk assets processing
+[sub] <s> [webpack.Progress] 91% sealing chunk assets processing
+[sub] <s> [webpack.Progress] 92% sealing asset processing
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin client.js restored cached SourceMap
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin resolve sources
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin resolve sources
+[sub] <s> [webpack.Progress] 92% sealing asset processing SourceMapDevToolPlugin
+[sub] <s> [webpack.Progress] 92% sealing asset processing
+[sub] <s> [webpack.Progress] 93% sealing after asset optimization
+[sub] <s> [webpack.Progress] 93% sealing after asset optimization
+[sub] <s> [webpack.Progress] 93% sealing recording
+[sub] <s> [webpack.Progress] 93% sealing recording
+[sub] <s> [webpack.Progress] 94% sealing after seal
+[sub] <s> [webpack.Progress] 94% sealing after seal
+[sub] ℹ ｢atl｣: Checking started in a separate process...
+[sub] ℹ ｢atl｣: Time: 10ms
+[sub] <s> [webpack.Progress] 95% emitting emit
+[sub] <s> [webpack.Progress] 95% emitting emit
+[sub] <s> [webpack.Progress] 98% emitting after emit
+[sub] <s> [webpack.Progress] 98% emitting after emit
+[sub] <s> [webpack.Progress] 99% done plugins
+[sub] <s> [webpack.Progress] 99% done plugins
+[sub] <s> [webpack.Progress] 99% 
+[sub] 
+[sub] assets by status 1.26 MiB [cached] 1 asset
+[sub] cached modules 1.24 MiB (javascript) 2.18 KiB (runtime) [cached] 21 modules
+[sub] dev (webpack 5.102.0) compiled successfully in 56 ms
+[sub] <s> [webpack.Progress] 99% cache store build dependencies
+[sub] <s> [webpack.Progress] 99% cache store build dependencies
+[sub] <s> [webpack.Progress] 99% cache begin idle
+[sub] <s> [webpack.Progress] 99% cache begin idle
+[sub] <s> [webpack.Progress] 100% 
+[sub] 
+[canvas] warning package.json: No license field
+[canvas] $ ESBUILD_WATCH=true node ./esbuild.js
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[backend] {"level":"info","time":"2025-11-01T15:08:34.137Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Creating typeorm connection pool for default"}
+[backend] (node:80262) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+[backend] (Use `node --trace-deprecation ...` to show where the warning was created)
+[backend] (node:80262) NOTE: The AWS SDK for JavaScript (v2) will enter maintenance mode
+[backend] on September 8, 2024 and reach end-of-support on September 8, 2025.
+[backend] 
+[backend] Please migrate your code to use AWS SDK for JavaScript (v3).
+[backend] For more information, check blog post at https://a.co/cUPnyil
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[backend] {"level":"info","time":"2025-11-01T15:08:37.682Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Creating typeorm connection pool for migration-pool"}
+[canvas] watching...
+[backend] {"level":"info","time":"2025-11-01T15:08:38.355Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Starting up app server; NODE_ENV: development"}
+[backend] {"level":"info","time":"2025-11-01T15:08:38.585Z","serviceName":"unknown-service","environment":"development","podName":"","message":"No socket host found; serving sockets from app backend"}
+[canvas] watching...
+[backend] {"level":"info","time":"2025-11-01T15:08:38.848Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Adding codegen routes"}
+[backend] {"level":"info","time":"2025-11-01T15:08:39.771Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Starting server with heap memory 9614.902336120605MB"}
+[backend] {"level":"info","time":"2025-11-01T15:08:39.854Z","serviceName":"unknown-service","environment":"development","podName":"","message":"\nApp studio is running at http://localhost:3004 in development mode\nPress CTRL-C to stop immediately.\nSend SIGINT to shutdown gracefully: kill -INT 80262\n"}
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[canvas] watching...
+[backend] {"level":"info","time":"2025-11-01T15:10:00.920Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Starting email notification process"}
+[backend] {"level":"info","time":"2025-11-01T15:10:00.966Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Starting notification processing at 2025-11-01T15:10:00.966Z"}
+[backend] {"level":"info","time":"2025-11-01T15:10:01.014Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Found 0 threads with new activity"}
+[backend] {"level":"info","time":"2025-11-01T15:10:01.015Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Generated notifications for 0 users"}
+[backend] {"level":"info","time":"2025-11-01T15:10:01.044Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Marked 0 threads as notified"}
+[backend] {"level":"info","time":"2025-11-01T15:10:01.044Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Email notification process completed successfully"}
+[backend] {"level":"info","time":"2025-11-01T15:10:01.045Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Notification emails sent"}
+[backend] {"level":"info","time":"2025-11-01T15:10:01.045Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] notifications emails took 127ms"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.014Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Starting email notification process"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.071Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Starting notification processing at 2025-11-01T15:20:00.071Z"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.102Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Found 0 threads with new activity"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.102Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Generated notifications for 0 users"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.118Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Marked 0 threads as notified"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.118Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Email notification process completed successfully"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.119Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Notification emails sent"}
+[backend] {"level":"info","time":"2025-11-01T15:20:00.119Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] notifications emails took 107ms"}
+[backend] {"level":"info","time":"2025-11-01T15:30:00.846Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Starting email notification process"}
+[backend] {"level":"info","time":"2025-11-01T15:30:00.935Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Starting notification processing at 2025-11-01T15:30:00.935Z"}
+[backend] {"level":"info","time":"2025-11-01T15:30:00.976Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Found 0 threads with new activity"}
+[backend] {"level":"info","time":"2025-11-01T15:30:00.987Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Generated notifications for 0 users"}
+[backend] {"level":"info","time":"2025-11-01T15:30:01.017Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Marked 0 threads as notified"}
+[backend] {"level":"info","time":"2025-11-01T15:30:01.018Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] Email notification process completed successfully"}
+[backend] {"level":"info","time":"2025-11-01T15:30:01.021Z","serviceName":"unknown-service","environment":"development","podName":"","message":"Notification emails sent"}
+[backend] {"level":"info","time":"2025-11-01T15:30:01.021Z","serviceName":"unknown-service","environment":"development","podName":"","message":"[Comments] notifications emails took 176ms"}
