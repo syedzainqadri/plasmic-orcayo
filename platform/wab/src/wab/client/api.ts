@@ -146,9 +146,32 @@ export const ajax = async (
   });
 
 export class Api extends SharedApi {
+  jwtToken: string | null = null;
+
   constructor() {
     super();
     ensureIsTopFrame();
+    console.log('API constructor called');
+    
+    // Check for JWT token in URL query parameters when API instance is created
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const jwtToken = urlParams.get('token') || urlParams.get('jwt');
+      if (jwtToken) {
+        console.log('JWT token detected in URL, setting jwtToken:', jwtToken);
+        this.jwtToken = jwtToken;
+        
+        // Remove the token from the URL to prevent it from being logged or cached
+        const newUrl = window.location.protocol + "//" + 
+                       window.location.host + 
+                       window.location.pathname + 
+                       window.location.search.replace(/[&\?](token|jwt)=[^&]*/, '').replace(/[&\?]$/, '') +
+                       window.location.hash;
+        window.history.replaceState({}, document.title, newUrl);
+      } else {
+        console.log('No JWT token found in URL');
+      }
+    }
   }
 
   setUser = setUser;
@@ -168,7 +191,22 @@ export class Api extends SharedApi {
     hideDataOnError?: boolean,
     noErrorTransform?: boolean
   ) {
-    return ajax(method, url, data, opts, hideDataOnError, noErrorTransform);
+    // Include JWT token in headers if available
+    const headers = {
+      ...(opts as any)?.headers || {},
+    };
+    
+    if (this.jwtToken) {
+      headers['Authorization'] = `Bearer ${this.jwtToken}`;
+      console.log('Attaching JWT token to request:', url);
+    }
+    
+    const modifiedOpts = {
+      ...opts,
+      headers,
+    };
+    
+    return ajax(method, url, data, modifiedOpts, hideDataOnError, noErrorTransform);
   }
 
   private socket?: Socket<ServerToClientEvents, ClientToServerEvents>;

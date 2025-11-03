@@ -21,6 +21,7 @@ import { setupPassport } from "@/wab/server/auth/passport-cfg";
 import * as authRoutes from "@/wab/server/auth/routes";
 import { apiAuth } from "@/wab/server/auth/routes";
 import { doLogout } from "@/wab/server/auth/util";
+import { jwtAuthMiddleware, skipCsrfForJwt } from "@/wab/server/auth/jwt-auth";
 import { Config } from "@/wab/server/config";
 import { DbMgr, SUPER_USER } from "@/wab/server/db/DbMgr";
 import { getDevFlagsMergedWithOverrides } from "@/wab/server/db/appconfig";
@@ -636,14 +637,19 @@ function addMiddlewares(
     )
   );
   app.use(safeCast<RequestHandler>(authRoutes.authApiTokenMiddleware));
+  // JWT authentication middleware - this should run before CSRF check
+  app.use(safeCast<RequestHandler>(jwtAuthMiddleware));
   if (!opts?.skipSession) {
+    // Middleware to skip CSRF when JWT token is present
+    app.use(safeCast<RequestHandler>(skipCsrfForJwt));
     const csrf = lusca.csrf();
     app.use((req, res, next) => {
       if (
         isCsrfFreeRoute(req.path, config) ||
-        authRoutes.isPublicApiRequest(req)
+        authRoutes.isPublicApiRequest(req) ||
+        (req as any).skipCsrf // Skip CSRF if JWT token is valid
       ) {
-        // API requests also don't need csrf
+        // API requests and JWT-authenticated requests don't need csrf
         return next();
       } else {
         return csrf(req, res, next);

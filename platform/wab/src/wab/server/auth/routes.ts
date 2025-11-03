@@ -711,6 +711,11 @@ export function isPublicApiRequest(req: Request) {
     req.headers?.["x-plasmic-api-cms-tokens"] ||
     // Team API token
     req.headers?.["x-plasmic-team-token"] ||
+    // JWT token in query parameter
+    req.query.token || 
+    req.query.jwt ||
+    // JWT token in header
+    (req.headers?.authorization && req.headers.authorization.startsWith('Bearer ')) ||
     isCustomPublicApiRequest(req)
   );
 }

@@ -366,7 +366,9 @@ export abstract class SharedApi {
   }
 
   async getSelfInfo(): Promise<SelfResponse> {
+    console.log('Calling getSelfInfo');
     const res: SelfResponse = await this.get("/auth/self");
+    console.log('getSelfInfo response:', res);
     this.setUser(res.user);
     return res;
   }

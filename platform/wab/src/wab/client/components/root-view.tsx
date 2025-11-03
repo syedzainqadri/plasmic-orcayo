@@ -132,7 +132,7 @@ function LoggedInContainer(props: LoggedInContainerProps) {
     >
       <IntroSplash />
       {!selfInfo ? (
-        // Not logged in users
+        // Not logged in users - check if we're waiting for JWT processing
         <Switch>
           {projectRoute()}
           <Redirect to={getLoginRouteWithContinuation()} />
@@ -469,6 +469,23 @@ export function Root() {
 
     spawn(
       (async () => {
+        // Check for project ID in URL query parameters (JWT token is handled in API constructor)
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('projectId');
+        
+        if (projectId) {
+          // Store the project ID in a variable to be used after initialization
+          (window as any)._pendingProjectRedirect = projectId;
+          
+          // Remove the project ID from the URL
+          const newUrl = window.location.protocol + "//" + 
+                         window.location.host + 
+                         window.location.pathname + 
+                         window.location.search.replace(/[&\?](projectId)=[^&]*/, '').replace(/[&\?]$/, '') +
+                         window.location.hash;
+          window.history.replaceState({}, document.title, newUrl);
+        }
+
         const lastBundleVersion = await withHostFrameCache(
           "bundle",
           true,
@@ -521,6 +538,19 @@ export function Root() {
 
       if (["enterprise", "team", "pro"].includes(tier)) {
         analytics().recordSession();
+      }
+
+      // Check if there's a pending project redirect
+      const pendingProjectId = (window as any)._pendingProjectRedirect;
+      if (pendingProjectId) {
+        // Clear the pending redirect
+        delete (window as any)._pendingProjectRedirect;
+        
+        // Redirect to the project page
+        setTimeout(() => {
+          const projectUrl = `/p/${pendingProjectId}`;
+          nonAuthCtx.history.push(projectUrl);
+        }, 0);
       }
     }
     return appCtx;
