@@ -85,6 +85,8 @@ import {
   cmsGenerateTokenPublic,
   cmsVerifyUser,
   cmsGetCurrentUser,
+  cmsCreateUserWithIdOnly,
+  cmsAuthenticateUserById,
 } from "@/wab/server/routes/cms-integration";
 import {
   getUserProjects,
@@ -1848,6 +1850,10 @@ export function addMainAppServerRoutes(
   app.post("/api/v1/cms-integration/generate-token", withNext(cmsGenerateTokenPublic));
   app.post("/api/v1/cms-integration/verify-user", safeCast<RequestHandler>(authRoutes.teamApiUserAuth), withNext(cmsVerifyUser));
   app.get("/api/v1/cms-integration/current-user", jwtAuthMiddleware, withNext(cmsGetCurrentUser));
+  
+  // Simplified user creation and authentication routes (ID-only)
+  app.post("/api/v1/cms-integration/create-user", withNext(cmsCreateUserWithIdOnly));
+  app.post("/api/v1/cms-integration/authenticate-user", withNext(cmsAuthenticateUserById));
 
   /**
    * User Projects routes
