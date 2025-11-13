@@ -5,7 +5,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: platform/wab/Dockerfile
+      dockerfile: Dockerfile.prod-node21
     restart: always
     volumes:
       # For production, we don't need to mount source code for development
