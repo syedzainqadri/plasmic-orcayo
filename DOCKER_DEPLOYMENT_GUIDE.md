@@ -2,11 +2,14 @@
 
 This document explains how to set up and run the Plasmic application with Docker in both local development and production environments.
 
+Note: While the request was to use Node v21.5.0 in production, the project has dependencies that require either Node 20.x or >=22.x (specifically walk-up-path@4.0.0). Therefore, production uses Node v22 for compatibility.
+
 ## Prerequisites
 
 - Docker Engine (v20.10.0 or later)
 - Docker Compose (v2.0.0 or later)
-- Node.js v21.5.0 (for both local development and production)
+- Node.js v21.5.0 (for local development)
+- Node.js v22 (for production due to dependency compatibility)
 
 ## Configuration Files
 
@@ -96,7 +99,7 @@ docker-compose -f docker-compose.prod.yml logs -f
 docker-compose -f docker-compose.prod.yml up --scale app=2
 
 # Run migrations manually (if needed)
-docker-compose -f docker-compose.prod.yml exec plasmic-app sh -c "cd /app/platform/wab && yarn typeorm migration:run"
+docker-compose -f docker-compose.prod.yml exec app sh -c "cd /app/platform/wab && yarn typeorm migration:run"
 
 # Stop the application
 docker-compose -f docker-compose.prod.yml down
@@ -178,11 +181,11 @@ docker-compose -f docker-compose.prod.yml ps
 
 # View logs
 docker-compose -f docker-compose.local.yml logs plasmic-wab
-docker-compose -f docker-compose.prod.yml logs plasmic-app
+docker-compose -f docker-compose.prod.yml logs app
 
 # Execute commands inside containers
 docker-compose -f docker-compose.local.yml exec plasmic-wab sh
-docker-compose -f docker-compose.prod.yml exec plasmic-app sh
+docker-compose -f docker-compose.prod.yml exec app sh
 
 # Build without starting services
 docker-compose -f docker-compose.local.yml build
@@ -195,4 +198,4 @@ docker-compose -f docker-compose.prod.yml build
 - The production setup is designed to connect to a remote database, so it doesn't include a PostgreSQL service
 - Both configurations use volumes to persist data and improve build performance
 - The Dockerfiles use multi-stage builds to optimize image size and security
-- The production configuration uses Node v21.5.0 as requested
+- The production configuration uses Node v22 instead of v21.5.0 to maintain compatibility with project dependencies
