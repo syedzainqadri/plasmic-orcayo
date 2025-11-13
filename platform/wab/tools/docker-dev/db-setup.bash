@@ -11,11 +11,14 @@ localhost:5432:*:supertdbwab:$PGPASSWORD
 EOF
 chmod 600 ~/.pgpass
 
-# createdb are missing on some platforms, like Macports postgresql4-server.
-psql -U postgres -c "create user wab password '$PGPASSWORD';"                                   # no special permissions
-psql -U postgres -c "create user cypress password '$PGPASSWORD';"                               # no special permissions
-psql -U postgres -c "create user superwab password '$PGPASSWORD' createdb createrole in group wab;" # let create tables and users
-psql -U postgres -c "create user supertdbwab password '$PGPASSWORD' createdb createrole in group wab;"       # let create tables and users
-psql -U postgres -c 'create database wab owner wab;'
-# Needed for generate_uuid_v4, used in some migrations.
-psql -U postgres -c 'create extension if not exists "uuid-ossp";'
+# The wab user and database are already created via environment variables
+# So we only need to create additional users and setup extensions
+
+# Connect using the POSTGRES_USER (wab) which has superuser privileges in this context
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE USER cypress WITH PASSWORD '$PGPASSWORD';
+    CREATE USER superwab WITH PASSWORD '$PGPASSWORD' CREATEDB CREATEROLE IN ROLE wab;
+    CREATE USER supertdbwab WITH PASSWORD '$PGPASSWORD' CREATEDB CREATEROLE IN ROLE wab;
+    GRANT ALL PRIVILEGES ON DATABASE wab TO wab;
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+EOSQL
