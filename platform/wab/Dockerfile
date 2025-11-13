@@ -104,6 +104,8 @@ RUN cd platform/canvas-packages && \
 # Final setup steps (excluding the make command that was causing issues)
 RUN cd platform/wab && \
     mkdir -p build dev-build && \
+    # Copy tsconfig.json to the wab directory so tsconfig-paths can find it when running from this directory
+    cp ../tsconfig.json . && \
     yarn add bcrypt --build-from-source && \
     yarn cache clean
 
