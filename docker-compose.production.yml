@@ -44,13 +44,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.fixed
-    command: # Override the default dockerfile startup command here for debugging purpose
-    - |
-      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
-      yarn typeorm migration:run && \
-      yarn seed && \
-      cd /plasmic && \
-      yarn dev
     volumes:
       # 1. Mount your local source code into the container
       - .:/plasmic
@@ -79,9 +72,7 @@ services:
       - "3004:3004"
       - "3005:3005"
       - "9229:9229"
-    depends_on:
-      plasmic-db:
-        condition: service_healthy
+      
     environment:
       - DATABASE_URI=postgresql://wab:SEKRET@142.44.136.233:5433/plasmic-db
       - WAB_DBHOST=142.44.136.233
