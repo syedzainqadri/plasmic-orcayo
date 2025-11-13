@@ -1,6 +1,6 @@
 {
   "type": "postgres",
-  "host": "localhost",
+  "host": "plasmic-db",
   "username": "wab",
   "database": "wab",
   "password": "SEKRET",

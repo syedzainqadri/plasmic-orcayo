@@ -4,14 +4,16 @@ services:
     image: postgres:15
     restart: always
     environment:
-      - POSTGRES_PASSWORD=SEKRET
+      POSTGRES_DB: wab
+      POSTGRES_USER: wab
+      POSTGRES_PASSWORD: SEKRET
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U wab"]
       interval: 5s
       timeout: 10s
       retries: 5
@@ -20,7 +22,7 @@ services:
   plasmic-wab:
     build:
       context: .
-      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
+      dockerfile: Dockerfile.fixed
     command: # Override the default dockerfile startup command here for debugging purpose
     - |
       jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
@@ -60,9 +62,11 @@ services:
       plasmic-db:
         condition: service_healthy
     environment:
-      - DATABASE_URI=postgres://wab:SEKRET@plasmic-db:5432/wab
-      - WAB_DBNAME=plasmic-db
+      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/wab
+      - WAB_DBHOST=plasmic-db
+      - WAB_DBUSER=wab
       - WAB_DBPASSWORD=SEKRET
+      - WAB_DBNAME=wab
       - NODE_ENV=development
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true

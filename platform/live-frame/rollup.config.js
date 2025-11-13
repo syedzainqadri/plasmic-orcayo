@@ -1,4 +1,3 @@
-import postcss from "rollup-plugin-postcss";
 import sucrase from "@rollup/plugin-sucrase";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -6,6 +5,21 @@ import replace from "@rollup/plugin-replace";
 import { terser } from "rollup-plugin-terser";
 
 const isProd = process.env.NODE_ENV === "production";
+
+// Custom plugin to stub CSS imports since we don't actually need to process the CSS files
+const cssStubPlugin = {
+  name: 'css-stub',
+  load(id) {
+    if (id.endsWith('.css')) {
+      return 'export default {}';
+    }
+  },
+  resolveId(id) {
+    if (id.endsWith('.css')) {
+      return id;
+    }
+  }
+};
 
 export default {
   input: "src/index.ts",
@@ -15,9 +29,9 @@ export default {
     sourcemap: true,
   },
   plugins: [
+    cssStubPlugin,  // Handle CSS imports
     resolve(),
     commonjs(),
-    postcss(),
     sucrase({
       exclude: ["node_modules/**"],
       transforms: ["typescript"],

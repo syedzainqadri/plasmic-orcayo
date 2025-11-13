@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  plasmic-db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: wab
+      POSTGRES_USER: wab
+      POSTGRES_PASSWORD: SEKRET
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wab"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: production.Dockerfile
+    restart: always
+    depends_on:
+      plasmic-db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URI=postgresql://wab:SEKRET@plasmic-db:5432/wab
+      - WAB_DBHOST=plasmic-db
+      - WAB_DBUSER=wab
+      - WAB_DBPASSWORD=SEKRET
+      - WAB_DBNAME=wab
+      - NODE_ENV=production
+      - PUBLIC_URL=http://localhost:3003
+      - SESSION_SECRET=plasmicapp_session_secret_key
+      - PLASMIC_DEPLOYMENT_ENV=production
+    ports:
+      - "3003-3005:3003-3005"
+    command: sh -c "sleep 30 && cd /app/platform/wab && yarn typeorm migration:run && yarn backend"
+
+volumes:
+  postgres_data:

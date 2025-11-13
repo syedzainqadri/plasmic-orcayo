@@ -1,0 +1,77 @@
+# --- Build stage ---
+FROM node:24-alpine AS builder
+
+WORKDIR /plasmic
+
+# Install system deps including jq
+RUN apk add --no-cache \
+    bash \
+    git \
+    curl \
+    python3 \
+    py3-pip \
+    postgresql-client \
+    build-base \
+    g++ \
+    make \
+    jq
+
+# Copy package files
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install --frozen-lockfile --prefer-offline
+
+# Copy the rest of the application
+COPY . .
+
+# Setup the application (without the potentially problematic parts)
+RUN mkdir -p /tmp/.plasmic && \
+    cp platform/wab/tools/docker-dev/secrets.json /tmp/.plasmic/secrets.json && \
+    cd platform/wab && yarn && \
+    cd /plasmic && \
+    yarn setup:wab && \
+    yarn setup:sub && \
+    yarn setup:react-web-bundle && \
+    yarn setup:loader-bundle-env && \
+    yarn setup:loader-html-hydrate && \
+    yarn setup:canvas-packages && \
+    yarn cache clean
+
+# --- Final stage ---
+FROM node:24-alpine
+
+# Install necessary packages and create user
+RUN apk add --no-cache \
+    bash \
+    git \
+    curl \
+    python3 \
+    py3-pip \
+    postgresql-client \
+    build-base \
+    g++ \
+    make \
+    jq && \
+    addgroup -S plasmic && \
+    adduser -S plasmic -G plasmic && \
+    mkdir -p $HOME && \
+    chown -R plasmic:plasmic $HOME
+
+USER plasmic
+
+WORKDIR /plasmic
+
+# Copy built application and secrets
+COPY --chown=plasmic:plasmic --from=builder /plasmic /plasmic
+COPY --chown=plasmic:plasmic --from=builder /tmp/.plasmic /home/plasmic/.plasmic
+
+EXPOSE 3003 3004 3005
+
+ENTRYPOINT ["sh", "-c"]
+CMD ["cd /plasmic/platform/wab && \
+    jq '(.host = \"plasmic-db\") | (.password //= \"SEKRET\")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+    yarn typeorm migration:run && \
+    yarn seed && \
+    cd /plasmic && \
+    yarn dev"]
