@@ -160,6 +160,30 @@ export default defineConfig({
     htmlPlugin: false,
     rspack: {
       plugins: [
+        // Custom plugin to handle the "use client" directive in external modules
+        {
+          apply(compiler) {
+            compiler.hooks.compilation.tap('RemoveUseClientDirective', (compilation) => {
+              const NormalModule = compiler.webpack.NormalModule;
+              
+              NormalModule.getCompilationHooks(compilation).loader.tapAsync(
+                'RemoveUseClientDirective',
+                (loaderContext, module, callback) => {
+                  if (module.resource && module.resource.includes('@plasmicapp/data-sources-context')) {
+                    const originalSource = module._source ? module._source.source() : null;
+                    if (originalSource && originalSource.includes('"use client"')) {
+                      const { RawSource } = compiler.webpack.sources;
+                      module._source = new RawSource(
+                        originalSource.replace(/^"use client";?\s*/m, '')
+                      );
+                    }
+                  }
+                  callback();
+                }
+              );
+            });
+          }
+        },
         // For most files, we are appending a commitHash to the file name
         // for caching and cache-busting. Ideally they'd be using a
         // content hash instead, but the client needs to know the exact
