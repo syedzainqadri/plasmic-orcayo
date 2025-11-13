@@ -16,5 +16,5 @@ if [[ ! $no_features ]]
 then NODE_OPTIONS="$NODE_OPTIONS --experimental-repl-await"
 fi
 
-#NQ_SQLJS=1 NODE_OPTIONS="--max-old-space-size=10000 $debug_args ${NODE_OPTIONS:-}" tsx --tsconfig tsconfig.tools.json "$@"
-NQ_SQLJS=1 NODE_OPTIONS="--max-old-space-size=$MAX_HEAP_SIZE $debug_args ${NODE_OPTIONS:-}" node -r esbuild-register -r dotenv/config "$@"
+# Register tsconfig-paths first before esbuild-register to ensure path resolution works properly
+NQ_SQLJS=1 NODE_OPTIONS="--max-old-space-size=$MAX_HEAP_SIZE $debug_args ${NODE_OPTIONS:-}" node -r tsconfig-paths/register -r esbuild-register -r dotenv/config "$@"
