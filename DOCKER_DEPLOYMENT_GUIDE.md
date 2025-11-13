@@ -1,215 +1,198 @@
-# Plasmic Application Docker Deployment Guide
+# Docker Deployment Guide for Plasmic
 
-This guide covers the production-ready Docker deployment of the Plasmic application with all the fixes and optimizations applied.
+This document explains how to set up and run the Plasmic application with Docker in both local development and production environments.
 
-## Table of Contents
-1. [Overview](#overview)
-2. [Docker Configuration](#docker-configuration)
-3. [Production Deployment](#production-deployment)
-4. [Development Deployment](#development-deployment)
-5. [Environment Variables](#environment-variables)
-6. [Health Checks](#health-checks)
-7. [Security Considerations](#security-considerations)
-8. [Troubleshooting](#troubleshooting)
+## Prerequisites
 
-## Overview
+- Docker Engine (v20.10.0 or later)
+- Docker Compose (v2.0.0 or later)
+- Node.js v21.5.0 (for both local development and production)
 
-The Plasmic application is a complex monorepo with multiple services. The Docker setup includes:
-- Application server (Node.js)
-- PostgreSQL database
-- Redis cache
-- Nginx reverse proxy
-- All necessary front-end and back-end components
+## Configuration Files
 
-## Docker Configuration
+The project includes two Docker Compose configurations:
 
-### Files Overview
+1. `docker-compose.local.yml` - For local development with PostgreSQL
+2. `docker-compose.prod.yml` - For production deployment connecting to remote database
 
-- `optimized.Dockerfile`: Optimized multi-stage build for production
-- `production.Dockerfile`: Full multi-stage build for production
-- `docker-compose.production.yml`: Production docker-compose configuration
-- `docker-compose.development.yml`: Development docker-compose configuration
-- `nginx.conf`: Production nginx configuration
+## Local Development Setup
 
-### Key Changes Made to Fix Build Issues
+### Running the Application Locally
 
-1. **Fixed live-frame build issue**: Modified rollup.config.js to use CSS stubbing instead of problematic postcss plugin
-2. **Optimized build process**: Created separate optimized Dockerfile to reduce build time
-3. **Security enhancements**: Added non-root user for container execution
-4. **Resource management**: Added resource limits and health checks
-5. **Multi-stage build**: Separated build and production stages for smaller image size
+1. Make sure you have the required environment variables in your `.env` file:
 
-## Production Deployment
+```
+DATABASE_URI=postgresql://wab:SEKRET@142.44.136.233:5432/plasmic-db
+WAB_DBNAME=plasmic-db
+WAB_DBPASSWORD=SEKRET
+NODE_ENV=development
+```
 
-### Prerequisites
-
-- Docker Engine 20.10+
-- Docker Compose v2+
-- Node version "20 || >=22" (required by application dependencies)
-- At least 4GB RAM for building and 8GB for running
-- 20GB+ disk space
-
-### Steps for Production Deployment
-
-1. **Set up environment variables** (create `.env` file):
-   ```bash
-   # Database
-   DB_PASSWORD=your_secure_password
-   DATABASE_URL=postgresql://plasmic:your_secure_password@plasmic-db:5432/plasmic_prod
-   
-   # Application
-   PUBLIC_URL=https://your-domain.com
-   NODE_ENV=production
-   
-   # Optional: Additional environment variables
-   ```
-
-2. **Build the application image** (for production deployment):
-   ```bash
-   # For production
-   docker build -f production.Dockerfile -t plasmic-app:production .
-   
-   # Or for optimized build
-   docker build -f optimized.Dockerfile -t plasmic-app:optimized .
-   ```
-
-3. **Deploy with Docker Compose**:
-   ```bash
-   docker-compose -f docker-compose.production.yml up -d
-   ```
-
-4. **Run database migrations** (on first deployment):
-   ```bash
-   docker-compose -f docker-compose.production.yml exec plasmic-app sh -c "cd /app/platform/wab && yarn typeorm migration:run"
-   ```
-
-5. **Verify deployment**:
-   ```bash
-   docker-compose -f docker-compose.production.yml ps
-   docker-compose -f docker-compose.production.yml logs plasmic-app
-   ```
-
-## Development Deployment
-
-For development, use the development compose file which mounts your source code:
+2. Start the services using Docker Compose:
 
 ```bash
-# Build the development image
-docker build -f optimized.Dockerfile -t plasmic-app:dev .
+# Build and start all services in the background
+docker-compose -f docker-compose.local.yml up --build
 
-# Start development services
-docker-compose -f docker-compose.development.yml up -d
+# Or run in detached mode
+docker-compose -f docker-compose.local.yml up --build -d
+```
 
-# Access the application
-# Frontend: http://localhost:3003
-# Backend: http://localhost:3004
+3. Access the application:
+   - Web App Builder: http://localhost:3003
+   - Backend API: http://localhost:3004
+   - Additional services: http://localhost:3005
+
+### Stopping the Local Development Environment
+
+```bash
+# Stop all services
+docker-compose -f docker-compose.local.yml down
+
+# Stop and remove volumes (this will delete your database data)
+docker-compose -f docker-compose.local.yml down -v
+```
+
+## Production Deployment Setup
+
+### Pre-deployment Configuration
+
+1. Update the database configuration in `docker-compose.prod.yml`:
+
+```yaml
+environment:
+  - DATABASE_URI=postgresql://wab:YOUR_PASSWORD@your-remote-db-host:5432/plasmic-db
+  - WAB_DBHOST=your-remote-db-host
+  - WAB_DBPORT=5432
+  - WAB_DBUSER=wab
+  - WAB_DBPASSWORD=YOUR_PASSWORD
+  - WAB_DBNAME=plasmic-db
+  - PUBLIC_URL=http://your-production-domain.com
+  - SESSION_SECRET=your-production-session-secret-key
+```
+
+2. Ensure your remote database is accessible and has the required schema.
+
+### Deploying to Production
+
+```bash
+# Build and start the application
+docker-compose -f docker-compose.prod.yml up --build -d
+
+# View logs
+docker-compose -f docker-compose.prod.yml logs -f
+
+# Check service status
+docker-compose -f docker-compose.prod.yml ps
+```
+
+### Managing Production Deployment
+
+```bash
+# View logs
+docker-compose -f docker-compose.prod.yml logs -f
+
+# Scale the application (if needed)
+docker-compose -f docker-compose.prod.yml up --scale plasmic-app=2
+
+# Run migrations manually (if needed)
+docker-compose -f docker-compose.prod.yml exec plasmic-app sh -c "cd /app/platform/wab && yarn typeorm migration:run"
+
+# Stop the application
+docker-compose -f docker-compose.prod.yml down
+
+# Update the application (rebuild and restart)
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+## Running Migrations
+
+### Local Development
+
+Migrations are automatically run when the application starts up. If you need to run them manually:
+
+```bash
+# Run in the container
+docker-compose -f docker-compose.local.yml exec plasmic-wab sh -c "cd /plasmic/platform/wab && yarn typeorm migration:run"
+```
+
+### Production
+
+Migrations are automatically run when the application starts up. For manual execution:
+
+```bash
+# Run in the container
+docker-compose -f docker-compose.prod.yml exec plasmic-app sh -c "cd /app/platform/wab && yarn typeorm migration:run"
 ```
 
 ## Environment Variables
 
-Required environment variables for production:
+### Local Development Environment Variables
 
-```bash
-# Database
-DB_PASSWORD=  # Secure password for PostgreSQL
-DATABASE_URL=  # Full database connection string
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NODE_ENV` | Environment mode | `development` |
+| `DATABASE_URL` | Database connection URL | `postgresql://wab:SEKRET@plasmic-db:5432/wab` |
+| `WAB_DBHOST` | Database host | `plasmic-db` |
+| `WAB_DBUSER` | Database user | `wab` |
+| `WAB_DBPASSWORD` | Database password | `SEKRET` |
+| `WAB_DBNAME` | Database name | `wab` |
 
-# Application
-PUBLIC_URL=  # Public URL for the application
-NODE_ENV=production  # Set to 'production' for production
+### Production Environment Variables
 
-# Optional but recommended
-PORT=3004  # Backend port
-WAB_DBNAME=plasmic-db  # Database hostname
-WAB_DBPASSWORD=  # Database password for application
-CHOKIDAR_USEPOLLING=true  # File watching in containers
-TRUST_PROXY=true  # Trust proxy headers
-```
-
-## Health Checks
-
-The Docker configuration includes health checks for all services:
-- PostgreSQL: Checks if database is ready
-- Redis: Checks if Redis is responding
-- Application: Checks /health endpoint
-- Nginx: Checks if the proxy is running
-
-## Security Considerations
-
-1. **Non-root user**: Application runs as 'plasmic' user (UID 1001)
-2. **Minimal base image**: Uses Alpine Linux for smaller attack surface
-3. **Resource limits**: CPU and memory limits prevent resource exhaustion
-4. **Security headers**: Nginx includes common security headers:
-   - X-Frame-Options: DENY
-   - X-Content-Type-Options: nosniff
-   - X-XSS-Protection: "1; mode=block"
-   - HSTS headers
-   - Content Security Policy
-5. **Network isolation**: Services run on isolated bridge network
-6. **Production build**: Optimized build without development dependencies
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NODE_ENV` | Environment mode | `production` |
+| `DATABASE_URI` | Database connection URL | `postgresql://wab:SEKRET@your-remote-db-host:5432/plasmic-db` |
+| `WAB_DBHOST` | Database host | `your-remote-db-host` |
+| `WAB_DBPORT` | Database port | `5432` |
+| `WAB_DBUSER` | Database user | `wab` |
+| `WAB_DBPASSWORD` | Database password | `SEKRET` |
+| `WAB_DBNAME` | Database name | `plasmic-db` |
+| `PUBLIC_URL` | Public URL for the application | `http://your-production-domain.com` |
+| `SESSION_SECRET` | Secret key for session encryption | `your-production-session-secret-key` |
+| `PLASMIC_DEPLOYMENT_ENV` | Deployment environment | `production` |
 
 ## Troubleshooting
 
-### Common Issues and Solutions
+### Common Issues
 
-1. **Build times are too long**
-   - Use the optimized Dockerfile for faster builds
-   - Use build cache efficiently by ordering Dockerfile instructions properly
-   - Consider using buildx with remote builders for faster compilation
+1. **Database Connection Issues**
+   - Verify that the database host, port, and credentials are correct
+   - Check that the database server is accessible from the application container
 
-2. **Application won't start**
-   - Check database connectivity: `docker-compose logs plasmic-db`
-   - Verify environment variables: `docker-compose exec plasmic-app env`
-   - Check health status: `docker ps` and `docker-compose ps`
+2. **Port Already in Use**
+   - Make sure ports 3003-3005 are not being used by other applications
+   - Check with: `lsof -i :3003`, `lsof -i :3004`, `lsof -i :3005`
 
-3. **Database migrations fail**
-   - Ensure the database is fully initialized: `docker-compose logs plasmic-db`
-   - Run migrations manually: `docker-compose exec plasmic-app yarn typeorm migration:run`
-
-4. **Performance issues**
-   - Verify resource limits match your infrastructure capabilities
-   - Monitor resource usage with `docker stats`
-   - Consider scaling services as needed
-
-5. **Live-frame build errors** (if building from scratch)
-   - The fix in rollup.config.js replaces the problematic postcss plugin with CSS stubbing
-   - This allows CSS imports to work without requiring full CSS processing
+3. **Node Modules Issues**
+   - Named volumes are used to preserve node_modules from the container
+   - If you encounter module errors, try clearing the volumes: `docker-compose -f docker-compose.local.yml down -v`
 
 ### Useful Commands
 
 ```bash
+# Check Docker Compose status
+docker-compose -f docker-compose.local.yml ps
+docker-compose -f docker-compose.prod.yml ps
+
 # View logs
-docker-compose -f docker-compose.production.yml logs -f plasmic-app
+docker-compose -f docker-compose.local.yml logs plasmic-wab
+docker-compose -f docker-compose.prod.yml logs plasmic-app
 
-# Execute commands in container
-docker-compose -f docker-compose.production.yml exec plasmic-app sh
+# Execute commands inside containers
+docker-compose -f docker-compose.local.yml exec plasmic-wab sh
+docker-compose -f docker-compose.prod.yml exec plasmic-app sh
 
-# Monitor resource usage
-docker stats
-
-# Scale application (if needed)
-docker-compose -f docker-compose.production.yml up -d --scale plasmic-app=2
-
-# Backup database
-docker-compose -f docker-compose.production.yml exec plasmic-db pg_dump -U plasmic plasmic_prod > backup.sql
+# Build without starting services
+docker-compose -f docker-compose.local.yml build
+docker-compose -f docker-compose.prod.yml build
 ```
 
-## Production Best Practices
+## Notes
 
-1. **Use external secrets management** for sensitive data like database passwords
-2. **Implement log aggregation** for better monitoring
-3. **Set up monitoring** for container metrics
-4. **Regular security scanning** of the container images
-5. **Automated CI/CD pipelines** for deployment
-6. **Database backups** with automated schedules
-7. **SSL certificates** from trusted certificate authorities
-8. **Rate limiting** at the nginx level for protection against abuse
-
-## Scaling
-
-For production environments, consider:
-- Load balancing across multiple application instances
-- Database read replicas
-- CDN for static assets
-- Caching layers
-- Auto-scaling based on metrics
+- The local development setup includes a PostgreSQL database service for convenience
+- The production setup is designed to connect to a remote database, so it doesn't include a PostgreSQL service
+- Both configurations use volumes to persist data and improve build performance
+- The Dockerfiles use multi-stage builds to optimize image size and security
+- The production configuration uses Node v21.5.0 as requested

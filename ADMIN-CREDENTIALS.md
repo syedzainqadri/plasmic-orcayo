@@ -2,7 +2,7 @@
 
 ## Default Admin User
 - **Email**: admin@admin.example.com
-- **Password**: !53kr3tz!
+- **Password**: ple
 
 ## Your User
 - **Email**: zain@wattlesol.com
