@@ -43,8 +43,7 @@
   "dependencies": {
     "jsonwebtoken": "^9.0.0",
     "@vercel/postgres": "^0.5.0"
-  }
-}
+  },
   "resolutions": {
     "eslint": "^8.55.0",
     "jest": "29.7.0",

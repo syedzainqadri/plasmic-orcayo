@@ -1,11 +1,11 @@
-# Use Node 21 alpine as the base image
-FROM node:21-alpine
-
-# Set working directory
-WORKDIR /app
+# Use a compatible Node version for the dependencies
+FROM node:20-alpine
 
 # Install bash and other required tools
 RUN apk add --no-cache bash curl python3 make g++
+
+# Set working directory
+WORKDIR /app
 
 # Copy the entire project
 COPY . .
@@ -29,25 +29,32 @@ RUN cd platform/react-web-bundle && yarn install && yarn build
 RUN cd platform/canvas-packages && yarn install && yarn build
 RUN cd platform/loader-html-hydrate && yarn install && yarn build
 
-# Expose the main port (Vercel will route requests appropriately)
-EXPOSE 3000
-EXPOSE 3004
-EXPOSE 3005
+# Expose the port that Vercel will use
+EXPOSE $PORT
 
-# Create a startup script that runs all services
+# Create a startup script
 RUN echo '#!/bin/bash\n\
 cd platform/wab && \\\n\
-echo "Starting all Plasmic services..." && \\\n\
-echo "Backend service will run on port 3004" && \\\n\
-echo "Frontend service will run on port 3000" && \\\n\
-echo "Host service will run on port 3005" && \\\n\
-concurrently \\\n\
-  --names "frontend,backend,host" \\\n\
-  --prefix name \\\n\
-  --kill-others-on-fail \\\n\
-  "PORT=3000 BACKEND_PORT=3004 PUBLIC_URL=http://localhost:3000 yarn start" \\\n\
-  "PORT=3004 CODEGEN_HOST=http://localhost:3000 BACKEND_PORT=3004 REACT_APP_DEV_PROXY=http://localhost:3000 yarn backend" \\\n\
-  "HOSTSERVER_PORT=3005 PORT=3005 yarn host-server"' > /app/start.sh
+echo "Starting Plasmic application..." && \\\n\
+\n\
+# Use Vercel-provided PORT or default to 3000\n\
+export PORT=${PORT:-3000} && \\\n\
+export BACKEND_PORT=3004 && \\\n\
+\n\
+# Start backend service in the background\n\
+echo "Starting backend on port $BACKEND_PORT..." && \\\n\
+BACKEND_PORT=$BACKEND_PORT REACT_APP_DEV_PROXY="http://localhost:$PORT" yarn backend & \\\n\
+\n\
+# Start host server in the background\n\
+echo "Starting host server on port 3005..." && \\\n\
+HOSTSERVER_PORT=3005 yarn host-server & \\\n\
+\n\
+# Wait a bit for services to start\n\
+sleep 5 && \\\n\
+\n\
+# Start the main frontend service on Vercel port\n\
+echo "Starting frontend on port $PORT..." && \\\n\
+exec yarn start' > /app/start.sh
 
 RUN chmod +x /app/start.sh
 

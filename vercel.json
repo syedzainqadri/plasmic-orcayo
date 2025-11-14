@@ -1,16 +1,4 @@
 {
   "version": 2,
-  "name": "plasmic-orcayo",
-  "builds": [
-    {
-      "src": "Dockerfile",
-      "use": "@vercel/docker"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ]
+  "name": "plasmic-orcayo"
 }
