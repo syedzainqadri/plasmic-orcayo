@@ -4,7 +4,7 @@ services:
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_DB: wab
+      POSTGRES_DB: plasmic-db
       POSTGRES_USER: wab
       POSTGRES_PASSWORD: SEKRET
     ports:
@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wab -d wab"]
+      test: ["CMD-SHELL", "pg_isready -U wab -d plasmic-db"]
       interval: 5s
       timeout: 10s
       retries: 10
@@ -30,13 +30,13 @@ services:
       export TYPEORM_HOST="plasmic-db" && \
       export TYPEORM_USERNAME="wab" && \
       export TYPEORM_PASSWORD="SEKRET" && \
-      export TYPEORM_DATABASE="wab" && \
+      export TYPEORM_DATABASE="plasmic-db" && \
       export TYPEORM_PORT="5432" && \
       export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" && \
       # Run database migrations using the locally installed typeorm \
       cd /plasmic/platform/wab && \
       # Wait for database to be ready before running migrations \
-      until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do \
+      until pg_isready -h plasmic-db -p 5432 -U wab -d plasmic-db; do \
         echo "Waiting for plasmic-db database..."; \
         sleep 2; \
       done && \
@@ -76,11 +76,11 @@ services:
       plasmic-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/wab  # Use port 5432, not 5433
+      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/plasmic-db  # Use port 5432 and correct database name
       - WAB_DBHOST=plasmic-db
       - WAB_DBUSER=wab
       - WAB_DBPASSWORD=SEKRET
-      - WAB_DBNAME=wab
+      - WAB_DBNAME=plasmic-db
       - NODE_ENV=development
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
