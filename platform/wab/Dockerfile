@@ -126,9 +126,24 @@ WORKDIR /app
 # Copy built application from builder stage
 COPY --from=builder --chown=plasmic:nodejs /app /app
 
-# Ensure tsconfig.json is available where the application runs
-# Copy tsconfig.json from project root to the platform/wab directory where the app runs
-RUN if [ -f /app/tsconfig.json ] && [ -d /app/platform/wab ]; then cp /app/tsconfig.json /app/platform/wab/; fi
+# Verify and ensure tsconfig.json is available where the application runs
+# Debug: list files to see the structure
+RUN ls -la /app && \
+    if [ -d /app/platform/wab ]; then ls -la /app/platform/wab | head -20; fi
+
+# Ensure tsconfig.json is in the platform/wab directory where app runs
+RUN if [ ! -f /app/platform/wab/tsconfig.json ]; then \
+      echo "tsconfig.json not found in /app/platform/wab, copying..."; \
+      if [ -f /app/tsconfig.json ]; then \
+        cp /app/tsconfig.json /app/platform/wab/; \
+        echo "Copied tsconfig.json to /app/platform/wab/"; \
+      else \
+        echo "ERROR: No tsconfig.json found in project root either!"; \
+        exit 1; \
+      fi; \
+    else \
+      echo "tsconfig.json already exists in /app/platform/wab/"; \
+    fi
 
 # Change ownership to non-root user
 USER plasmic
