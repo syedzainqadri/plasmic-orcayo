@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: wab
       POSTGRES_PASSWORD: SEKRET
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
@@ -62,7 +62,7 @@ services:
       plasmic-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/wab
+      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5433/wab
       - WAB_DBHOST=plasmic-db
       - WAB_DBUSER=wab
       - WAB_DBPASSWORD=SEKRET
