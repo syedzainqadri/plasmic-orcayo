@@ -4,16 +4,16 @@ services:
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_DB: plasmic-db
+      POSTGRES_DB: wab
       POSTGRES_USER: wab
       POSTGRES_PASSWORD: SEKRET
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wab -d plasmic-db"]
+      test: ["CMD-SHELL", "pg_isready -U wab -d wab"]
       interval: 5s
       timeout: 10s
       retries: 10
@@ -25,22 +25,9 @@ services:
       context: .
       dockerfile: Dockerfile.fixed
     command: # Override the default dockerfile startup command here for debugging purpose
-    - |
-      # Set TypeORM environment variables to configure database connection \
-      export TYPEORM_HOST="plasmic-db" && \
-      export TYPEORM_USERNAME="wab" && \
-      export TYPEORM_PASSWORD="SEKRET" && \
-      export TYPEORM_DATABASE="plasmic-db" && \
-      export TYPEORM_PORT="5432" && \
-      export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" && \
-      # Run database migrations using the locally installed typeorm \
-      cd /plasmic/platform/wab && \
-      # Wait for database to be ready before running migrations \
-      until pg_isready -h plasmic-db -p 5432 -U wab -d plasmic-db; do \
-        echo "Waiting for plasmic-db database..."; \
-        sleep 2; \
-      done && \
-      npx typeorm migration:run && \
+     - |
+      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+      yarn typeorm migration:run && \
       yarn seed && \
       cd /plasmic && \
       yarn dev
@@ -76,11 +63,12 @@ services:
       plasmic-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/plasmic-db  # Use port 5432 and correct database name
+      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/wab  # Use port 5432 and correct database name
       - WAB_DBHOST=plasmic-db
       - WAB_DBUSER=wab
       - WAB_DBPASSWORD=SEKRET
-      - WAB_DBNAME=plasmic-db
+      - WAB_DBNAME=wab
+      - WAB_DBPORT=5432
       - NODE_ENV=development
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
