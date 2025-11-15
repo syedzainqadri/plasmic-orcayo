@@ -33,18 +33,11 @@ services:
      - -c
      - |
           export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" &&
-          # Wait for database to be ready before running migrations
-          until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do
+          until pg_isready -h plasmic-db -p 5432 -U wab; do
             echo "Waiting for plasmic-db database...";
             sleep 2;
           done &&
           cd /app/platform/wab &&
-          # Use the environment variables directly
-          export TYPEORM_HOST=plasmic-db &&
-          export TYPEORM_USERNAME=wab &&
-          export TYPEORM_PASSWORD=SEKRET &&
-          export TYPEORM_DATABASE=wab &&
-          export TYPEORM_PORT=5432 &&
           npx typeorm migration:run &&
           yarn seed &&
           cd /app &&
