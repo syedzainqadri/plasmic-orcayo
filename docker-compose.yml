@@ -39,9 +39,6 @@ services:
             echo "Waiting for plasmic-db database...";
             sleep 2;
           done &&
-          cd /app &&
-          # Install dependencies to ensure all modules are available
-          yarn install --frozen-lockfile --network-timeout 300000 --prefer-offline &&
           cd /app/platform/wab &&
           # Use the environment variables directly
           export TYPEORM_HOST=plasmic-db &&
