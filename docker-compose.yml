@@ -4,91 +4,50 @@ services:
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_DB: wab
-      POSTGRES_USER: wab
-      POSTGRES_PASSWORD: SEKRET
+      - POSTGRES_PASSWORD=SEKRET
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wab -d wab"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 10s
-      retries: 10
-      start_period: 30s
-    networks:
-      default:
-        aliases:
-          - db  # Allow access via both 'plasmic-db' and 'db'
+      retries: 5
 
   # Plasmic WAB (Web App Builder)
-  app:
+  plasmic-wab:
     build:
       context: .
-      dockerfile: platform/wab/Dockerfile
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command: # Override the default dockerfile startup command here for debugging purpose
-     - /bin/sh
-     - -c
-     - |
-          # Fix permissions for mounted volumes
-          chown -R plasmic:nodejs /app 2>/dev/null || echo "Setting permissions..." &&
-          export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" &&
-          # Wait for database to be ready before running migrations
-          export PGPASSWORD=SEKRET &&
-          until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do
-            echo "Waiting for plasmic-db database...";
-            sleep 2;
-          done &&
-          cd /app/platform/wab &&
-          # Use the environment variables directly
-          export TYPEORM_HOST=plasmic-db &&
-          export TYPEORM_USERNAME=wab &&
-          export TYPEORM_PASSWORD=SEKRET &&
-          export TYPEORM_DATABASE=wab &&
-          export TYPEORM_PORT=5432 &&
-          npx typeorm migration:run &&
-          yarn seed &&
-          cd /app &&
-          yarn dev
+    - |
+      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+      yarn typeorm migration:run && \
+      yarn seed && \
+      cd /plasmic && \
+      yarn dev
     volumes:
-      # 1. Mount specific directories to enable development while preserving container node_modules
-      - ./platform:/app/platform
-      - ./packages:/app/packages
-      - ./plasmicpkgs:/app/plasmicpkgs
-      - ./plasmicpkgs-dev:/app/plasmicpkgs-dev
-      - ./scripts:/app/scripts
-      - ./docs:/app/docs
-      - ./.gitignore:/app/.gitignore
-      - ./README.md:/app/README.md
-      - ./CONTRIBUTING.md:/app/CONTRIBUTING.md
-      - ./ACCESSING_PLASMIC.md:/app/ACCESSING_PLASMIC.md
-      - ./ADMIN-CREDENTIALS.md:/app/ADMIN-CREDENTIALS.md
-      - ./DEVELOPMENT_SETUP.md:/app/DEVELOPMENT_SETUP.md
-      - ./LOCAL_DEVELOPMENT_SETUP.md:/app/LOCAL_DEVELOPMENT_SETUP.md
-      - ./RUNNING_PLASMIC.md:/app/RUNNING_PLASMIC.md
-      - ./SETUP_ERRORS.md:/app/SETUP_ERRORS.md
-      - ./DOCKER_DEPLOYMENT_GUIDE.md:/app/DOCKER_DEPLOYMENT_GUIDE.md
-      - ./cookie.txt:/app/cookie.txt
-      - ./docker-compose.yml:/app/docker-compose.yml
+      # 1. Mount your local source code into the container
+      - .:/plasmic
       # 2. Use named volumes to preserve built container files from being overwritten by unbuilt local code
       # --- Node Modules (Existing) ---
-      - plasmic_node_modules:/app/node_modules
-      - plasmic_wab_node_modules:/app/platform/wab/node_modules
-      - plasmic_sub_node_modules:/app/platform/sub/node_modules
-      - plasmic_canvas_node_modules:/app/platform/canvas-packages/node_modules
-      - plasmic_live_frame_node_modules:/app/platform/live-frame/node_modules
-      - plasmic_react_web_bundle_node_modules:/app/platform/react-web-bundle/node_modules
-      - plasmic_loader_bundle_env_node_modules:/app/platform/loader-bundle-env/node_modules
-      - plasmic_loader_html_hydrate_node_modules:/app/platform/loader-html-hydrate/node_modules
+      - plasmic_node_modules:/plasmic/node_modules
+      - plasmic_wab_node_modules:/plasmic/platform/wab/node_modules
+      - plasmic_sub_node_modules:/plasmic/platform/sub/node_modules
+      - plasmic_canvas_node_modules:/plasmic/platform/canvas-packages/node_modules
+      - plasmic_live_frame_node_modules:/plasmic/platform/live-frame/node_modules
+      - plasmic_react_web_bundle_node_modules:/plasmic/platform/react-web-bundle/node_modules
+      - plasmic_loader_bundle_env_node_modules:/plasmic/platform/loader-bundle-env/node_modules
+      - plasmic_loader_html_hydrate_node_modules:/plasmic/platform/loader-html-hydrate/node_modules
 
       # --- Generated files ---
-      - plasmic_public:/app/platform/wab/public
-      - plasmic_wab_client:/app/platform/wab/src/wab/client
-      - plasmic_wab_gen:/app/platform/wab/src/wab/gen
-      - plasmic_wab_shared_model:/app/platform/wab/src/wab/shared/model
-      - plasmic_generated_styles:/app/platform/wab/src/wab/styles
+      - plasmic_public:/plasmic/platform/wab/public
+      - plasmic_wab_client:/plasmic/platform/wab/src/wab/client
+      - plasmic_wab_gen:/plasmic/platform/wab/src/wab/gen
+      - plasmic_wab_shared_model:/plasmic/platform/wab/src/wab/shared/model
+      - plasmic_generated_styles:/plasmic/platform/wab/src/wab/styles
 
       # --- Build Caches ---
       - plasmic_playwright_cache:/home/plasmic/.cache/ms-playwright
@@ -101,16 +60,9 @@ services:
       plasmic-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/wab  # Use port 5432 and correct database name
-      - WAB_DBHOST=plasmic-db
-      - WAB_DBUSER=wab
+      - DATABASE_URI=postgres://wab:SEKRET@plasmic-db:5432/wab
+      - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=SEKRET
-      - WAB_DBNAME=wab
-      - WAB_DBPORT=5432
-      - TUTORIAL_DB_NAME=wab
-      - TUTORIAL_DB_USER=wab
-      - DB_HOST=plasmic-db
-      - DOCKER_ENV=1
       - NODE_ENV=development
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
