@@ -132,19 +132,20 @@ export async function getSuperTutorialDbConnection(opts?: {
   database?: string;
   type?: TutorialType;
 }) {
-  const database = opts?.database ?? "postgres";
+  const database = opts?.database ?? (process.env.TUTORIAL_DB_NAME || "postgres");
   const host = getTutorialDbHost();
+  const username = process.env.TUTORIAL_DB_USER || "supertdbwab";
   // if TUTORIAL_DB_SUPER_PASSWORD is absent, will just fallback
   // to ~/.pgpass
   const password = process.env.TUTORIAL_DB_SUPER_PASSSWORD;
   const connName = `super-tutorialdb-${
-    database ?? "postgres"
+    database ?? (process.env.TUTORIAL_DB_NAME || "postgres")
   }-${mkShortUuid()}`;
   const conOpts: ConnectionOptions = {
     type: "postgres",
     host,
-    username: "supertdbwab",
-    database: database ?? "postgres",
+    username: username,
+    database: database,
     password,
     name: connName,
     ...getSslOptions(),

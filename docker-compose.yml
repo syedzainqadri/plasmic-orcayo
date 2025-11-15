@@ -80,6 +80,8 @@ services:
       - WAB_DBPASSWORD=SEKRET
       - WAB_DBNAME=wab
       - WAB_DBPORT=5432
+      - TUTORIAL_DB_NAME=wab
+      - TUTORIAL_DB_USER=wab
       - NODE_ENV=development
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
