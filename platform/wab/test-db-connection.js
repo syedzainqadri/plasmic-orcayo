@@ -6,7 +6,7 @@ async function testConnection() {
     port: parseInt(process.env.WAB_DBPORT || '5433', 10),
     user: process.env.WAB_DBUSER || 'wab',
     password: process.env.WAB_DBPASSWORD || 'SEKRET',
-    database: process.env.WAB_DBNAME || 'plasmic-db',
+    database: process.env.WAB_DBNAME || 'wab',
   });
 
   try {

@@ -151,7 +151,7 @@ docker-compose -f docker-compose.prod.yml exec app sh -c "cd /app/platform/wab &
 | `WAB_DBPORT` | Database port | `5432` |
 | `WAB_DBUSER` | Database user | `wab` |
 | `WAB_DBPASSWORD` | Database password | `SEKRET` |
-| `WAB_DBNAME` | Database name | `plasmic-db` |
+| `WAB_DBNAME` | Database name | `wab` |
 | `PUBLIC_URL` | Public URL for the application | `http://your-production-domain.com` |
 | `SESSION_SECRET` | Secret key for session encryption | `your-production-session-secret-key` |
 | `PLASMIC_DEPLOYMENT_ENV` | Deployment environment | `production` |

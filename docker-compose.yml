@@ -36,6 +36,7 @@ services:
           chown -R plasmic:nodejs /app 2>/dev/null || echo "Setting permissions..." &&
           export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" &&
           # Wait for database to be ready before running migrations
+          export PGPASSWORD=SEKRET &&
           until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do
             echo "Waiting for plasmic-db database...";
             sleep 2;
