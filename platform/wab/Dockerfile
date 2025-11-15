@@ -1,4 +1,4 @@
-# Multi-stage production Dockerfile for Plasmic application
+# ‌Multi-stage production Dockerfile for Plasmic application
 # Using Node v22 as required for production environment
 
 # === Build Stage ===
@@ -30,11 +30,12 @@ RUN yarn install --frozen-lockfile --prefer-offline --network-timeout 100000
 COPY . .
 
 # Skip Cypress installation during Docker build as it causes network issues in production builds
-RUN CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --network-timeout 300000 --prefer-offline
+# Clean Yarn cache first to avoid corruption issues
+RUN yarn cache clean --force && CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --network-timeout 300000 --prefer-offline
 
 # Final setup steps
 RUN mkdir -p build dev-build && \
-    yarn add bcrypt --build-from-source && \
+    yarn add -W bcrypt --build-from-source && \
     yarn cache clean
 
 # === Production Stage ===

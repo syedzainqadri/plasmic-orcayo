@@ -18,50 +18,57 @@ services:
       timeout: 10s
       retries: 10
       start_period: 30s
+    networks:
+      default:
+        aliases:
+          - db  # Allow access via both 'plasmic-db' and 'db'
 
   # Plasmic WAB (Web App Builder)
   app:
     build:
       context: .
-      dockerfile: Dockerfile.fixed
+      dockerfile: platform/wab/Dockerfile
     command: # Override the default dockerfile startup command here for debugging purpose
+     - /bin/sh
+     - -c
      - |
-      export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" && \
-      # Wait for database to be ready before running migrations \
-      until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do \
-        echo "Waiting for plasmic-db database..."; \
-        sleep 2; \
-      done && \
-      cd /plasmic/platform/wab && \
-      # Use the environment variables directly \
-      export TYPEORM_HOST=plasmic-db && \
-      export TYPEORM_USERNAME=wab && \
-      export TYPEORM_PASSWORD=SEKRET && \
-      export TYPEORM_DATABASE=wab && \
-      export TYPEORM_PORT=5432 && \
-      npx typeorm migration:run && \
-      yarn seed && \
-      cd /plasmic && \
-      yarn dev
+          export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" &&
+          # Wait for database to be ready before running migrations
+          until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do
+            echo "Waiting for plasmic-db database...";
+            sleep 2;
+          done &&
+          cd /app/platform/wab &&
+          # Use the environment variables directly
+          export TYPEORM_HOST=plasmic-db &&
+          export TYPEORM_USERNAME=wab &&
+          export TYPEORM_PASSWORD=SEKRET &&
+          export TYPEORM_DATABASE=wab &&
+          export TYPEORM_PORT=5432 &&
+          npx typeorm migration:run &&
+          yarn seed &&
+          cd /app &&
+          yarn dev
+    volumes:
       # 1. Mount your local source code into the container
-      - .:/plasmic
+      - .:/app
       # 2. Use named volumes to preserve built container files from being overwritten by unbuilt local code
       # --- Node Modules (Existing) ---
-      - plasmic_node_modules:/plasmic/node_modules
-      - plasmic_wab_node_modules:/plasmic/platform/wab/node_modules
-      - plasmic_sub_node_modules:/plasmic/platform/sub/node_modules
-      - plasmic_canvas_node_modules:/plasmic/platform/canvas-packages/node_modules
-      - plasmic_live_frame_node_modules:/plasmic/platform/live-frame/node_modules
-      - plasmic_react_web_bundle_node_modules:/plasmic/platform/react-web-bundle/node_modules
-      - plasmic_loader_bundle_env_node_modules:/plasmic/platform/loader-bundle-env/node_modules
-      - plasmic_loader_html_hydrate_node_modules:/plasmic/platform/loader-html-hydrate/node_modules
+      - plasmic_node_modules:/app/node_modules
+      - plasmic_wab_node_modules:/app/platform/wab/node_modules
+      - plasmic_sub_node_modules:/app/platform/sub/node_modules
+      - plasmic_canvas_node_modules:/app/platform/canvas-packages/node_modules
+      - plasmic_live_frame_node_modules:/app/platform/live-frame/node_modules
+      - plasmic_react_web_bundle_node_modules:/app/platform/react-web-bundle/node_modules
+      - plasmic_loader_bundle_env_node_modules:/app/platform/loader-bundle-env/node_modules
+      - plasmic_loader_html_hydrate_node_modules:/app/platform/loader-html-hydrate/node_modules
 
       # --- Generated files ---
-      - plasmic_public:/plasmic/platform/wab/public
-      - plasmic_wab_client:/plasmic/platform/wab/src/wab/client
-      - plasmic_wab_gen:/plasmic/platform/wab/src/wab/gen
-      - plasmic_wab_shared_model:/plasmic/platform/wab/src/wab/shared/model
-      - plasmic_generated_styles:/plasmic/platform/wab/src/wab/styles
+      - plasmic_public:/app/platform/wab/public
+      - plasmic_wab_client:/app/platform/wab/src/wab/client
+      - plasmic_wab_gen:/app/platform/wab/src/wab/gen
+      - plasmic_wab_shared_model:/app/platform/wab/src/wab/shared/model
+      - plasmic_generated_styles:/app/platform/wab/src/wab/styles
 
       # --- Build Caches ---
       - plasmic_playwright_cache:/home/plasmic/.cache/ms-playwright
