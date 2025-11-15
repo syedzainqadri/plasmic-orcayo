@@ -48,7 +48,6 @@ services:
           export TYPEORM_PASSWORD=SEKRET &&
           export TYPEORM_DATABASE=wab &&
           export TYPEORM_PORT=5432 &&
-          yarn migrate || yarn wab:migrate || yarn db:migrate &&
           yarn seed &&
           cd /app &&
           yarn dev
