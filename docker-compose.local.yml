@@ -41,10 +41,18 @@ services:
       - "3005:3005"
       - "9229:9229"
     environment:
-      - DATABASE_URI=postgresql://wab:SEKRET@142.44.136.233:5433/wab
-      - WAB_DBNAME=wab
-      - WAB_DBPASSWORD=SEKRET
-      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
+      - WAB_DBHOST=${WAB_DBHOST}
+      - WAB_DBNAME=${WAB_DBNAME}
+      - WAB_DBPASSWORD=${WAB_DBPASSWORD}
+      - WAB_DBUSER=${WAB_DBUSER}
+      - WAB_DBPORT=${WAB_DBPORT}
+      - REDIS_URL=${REDIS_URL}
+      - NODE_ENV=production
+      - CMS_INTEGRATION_API_KEY=${CMS_INTEGRATION_API_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost}
+      - PLASMIC_DEPLOYMENT_ENV=production
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
     tty: true
