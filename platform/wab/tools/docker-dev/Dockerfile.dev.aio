@@ -1,5 +1,5 @@
 # --- Build stage ---
-FROM node:24-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /plasmic
 
@@ -31,7 +31,7 @@ RUN mkdir -p /tmp/.plasmic && \
     yarn cache clean
 
 # --- Final stage ---
-FROM node:24-alpine
+FROM node:22-alpine
 
 # Create non-root user and prepare env
 RUN addgroup -S plasmic && \

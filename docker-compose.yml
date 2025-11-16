@@ -44,7 +44,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./platform/wab/Dockerfile
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command: # Override the default dockerfile startup command here for production
     - /bin/sh
     - -c
