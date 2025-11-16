@@ -44,7 +44,7 @@ services:
       sh -c "
         cd /app/platform/wab &&
         echo 'Running database migrations...' &&
-        yarn run-ts -- run-migrations.ts &&
+        npx typeorm migration:run -f /app/platform/wab/ormconfig.js &&
         echo 'Starting Plasmic in production mode...' &&
         yarn backend
       "
