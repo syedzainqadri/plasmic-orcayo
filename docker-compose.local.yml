@@ -41,14 +41,10 @@ services:
       - "3005:3005"
       - "9229:9229"
     environment:
-      - DATABASE_URI=postgres://wab:SEKRET@plasmic-db:5432/wab
-      - WAB_DBNAME=plasmic-db
+      - DATABASE_URI=postgresql://wab:SEKRET@142.44.136.233:5433/wab
+      - WAB_DBNAME=wab
       - WAB_DBPASSWORD=SEKRET
       - NODE_ENV=development
-      - S3_ENDPOINT=http://plasmic-minio:9000
-      - AWS_ACCESS_KEY_ID=minioadmin
-      - AWS_SECRET_ACCESS_KEY=minioadmin
-      - SITE_ASSETS_BUCKET=plasmic-site-assets
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
     tty: true
