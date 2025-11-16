@@ -49,10 +49,24 @@ services:
     - /bin/sh
     - -c
     - |
+      export PGPASSWORD=SEKRET &&
       cd /plasmic/platform/wab &&
-      cp ormconfig.json tmp_ormconfig.json &&
-      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' tmp_ormconfig.json > ormconfig.json &&
-      rm tmp_ormconfig.json &&
+      # Wait for database to be ready before running migrations
+      until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do
+        echo "Waiting for plasmic-db database...";
+        sleep 2;
+      done &&
+      # Check if ormconfig.json exists in the current directory
+      if [ ! -f ormconfig.json ]; then
+        echo "ormconfig.json not found in $(pwd)"
+        echo "Creating default ormconfig.json with correct database settings"
+        echo '{"type": "postgres", "host": "plasmic-db", "port": 5432, "username": "wab", "password": "SEKRET", "database": "wab", "synchronize": false, "dropSchema": false, "logging": false, "entities": ["src/wab/server/entities/**/*.ts"], "migrations": ["src/wab/server/migrations/**/*.ts"], "subscribers": ["src/wab/server/subscribers/**/*.ts"], "cli": {"entitiesDir": "src/wab/server/entities", "migrationsDir": "src/wab/server/migrations", "subscribersDir": "src/wab/server/subscribers"}}' > ormconfig.json
+      else
+        # Modify ormconfig.json in a safe way
+        cp ormconfig.json tmp_ormconfig.json &&
+        jq '(.host = "plasmic-db") | (.password //= "SEKRET")' tmp_ormconfig.json > ormconfig.json &&
+        rm tmp_ormconfig.json
+      fi &&
       yarn typeorm migration:run &&
       yarn seed &&
       cd /plasmic &&
