@@ -42,7 +42,7 @@ services:
     # Run with proper production command
     command: >
       sh -c "
-        cd /app/platform/wab &&
+        cd /app/platform/wab && ls && yarn install &&
         echo 'Running database migrations...' &&
         yarn run-ts -- run-migrations.ts &&
         echo 'Starting Plasmic in production mode...' &&
