@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # Plasmic application service (production)
+  app:
+    build:
+      context: .
+      dockerfile: platform/wab/Dockerfile
+      target: production  # Use the production stage from multi-stage Dockerfile
+    restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://wab:SEKRET@db:5432/wab}
+      - WAB_DBHOST=${WAB_DBHOST:-db}
+      - WAB_DBNAME=${WAB_DBNAME:-wab}
+      - WAB_DBPASSWORD=${WAB_DBPASSWORD:-SEKRET}
+      - WAB_DBUSER=${WAB_DBUSER:-wab}
+      - WAB_DBPORT=${WAB_DBPORT:-5432}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - NODE_ENV=production
+      - CMS_INTEGRATION_API_KEY=${CMS_INTEGRATION_API_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost}
+      - PLASMIC_DEPLOYMENT_ENV=production
+    ports:
+      - "3003:3003"  # Frontend
+      - "3004:3004"  # Backend
+      - "3005:3005"  # Host server
+    depends_on:
+      - db  # Production typically connects to external DB
+    volumes:
+      # For production, we'll use only necessary volumes
+      - app_logs:/app/logs
+    networks:
+      - plasmic-network
+    # Set resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+        reservations:
+          memory: 2G
+          cpus: '1'
+    # Run with proper production command
+    command: >
+      sh -c "
+        cd /app/platform/wab &&
+        echo 'Running database migrations...' &&
+        yarn typeorm migration:run &&
+        echo 'Starting Plasmic in production mode...' &&
+        yarn backend
+      "
+
+  # Optional: Nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/private:ro  # Mount SSL certificates
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - app
+    networks:
+      - plasmic-network
+
+volumes:
+  app_logs:
+  nginx_logs:
+
+networks:
+  plasmic-network:
+    driver: bridge

@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database for local development
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: wab
+      POSTGRES_USER: wab
+      POSTGRES_PASSWORD: SEKRET
+    ports:
+      - "5433:5432"  # Expose on port 5433 to avoid conflicts
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wab -d wab"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - plasmic-network
+
+  # Redis for session storage and caching (optional but recommended)
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - plasmic-network
+
+  # Plasmic application service
+  app:
+    build:
+      context: .
+      dockerfile: platform/wab/Dockerfile
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://wab:SEKRET@db:5432/wab
+      - WAB_DBHOST=db
+      - WAB_DBNAME=wab
+      - WAB_DBPASSWORD=SEKRET
+      - WAB_DBUSER=wab
+      - WAB_DBPORT=5432
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
+      - CMS_INTEGRATION_API_KEY=test_cms_api_key_12345
+      - CHOKIDAR_USEPOLLING=true  # For file watching in Docker
+    ports:
+      - "3003:3003"  # Frontend
+      - "3004:3004"  # Backend
+      - "3005:3005"  # Host server
+      - "9229:9229"  # Debug port
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      # Mount source code for development
+      - .:/app
+      # Named volumes for node_modules to preserve build output
+      - /app/node_modules
+      - /app/platform/wab/node_modules
+      - /app/platform/sub/node_modules
+      - /app/platform/canvas-packages/node_modules
+      - /app/platform/live-frame/node_modules
+      - /app/platform/react-web-bundle/node_modules
+      - /app/platform/loader-bundle-env/node_modules
+      - /app/platform/loader-html-hydrate/node_modules
+      # Named volumes for generated files and caches
+      - wab_public:/app/platform/wab/public
+      - wab_client:/app/platform/wab/src/wab/client
+      - wab_gen:/app/platform/wab/src/wab/gen
+      - wab_shared_model:/app/platform/wab/src/wab/shared/model
+      - generated_styles:/app/platform/wab/src/wab/styles
+      - playwright_cache:/home/node/.cache/ms-playwright
+    networks:
+      - plasmic-network
+    # Run migrations and seed data on startup
+    command: >
+      sh -c "
+        cd /app/platform/wab &&
+        yarn typeorm migration:run &&
+        yarn seed &&
+        cd /app &&
+        yarn dev
+      "
+
+volumes:
+  postgres_data:
+  redis_data:
+  wab_public:
+  wab_client:
+  wab_gen:
+  wab_shared_model:
+  generated_styles:
+  playwright_cache:
+
+networks:
+  plasmic-network:
+    driver: bridge
