@@ -1,4 +1,4 @@
-# ‌Multi-stage production Dockerfile for Plasmic application
+# Multi-stage production Dockerfile for Plasmic application
 # Using Node v22 as required for production environment
 
 # === Build Stage ===
@@ -57,6 +57,13 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
+# Install TypeORM and other required packages globally
+RUN yarn global add typeorm pg reflect-metadata
+
+# Copy wait-for-it.sh script to wait for database
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
 # Copy built application from builder stage
 COPY --from=builder --chown=plasmic:nodejs /app /app
 
@@ -73,7 +80,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
 # Use dumb-init to handle PID 1 properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Default command to start the application - in the simplified Docker context, 
-# the application code is directly in /app, not in /app/platform/wab
-# Environment variables need to be provided at runtime
-CMD ["sh", "-c", "yarn backend"]
+# Default command to start the application with database connection check and migrations
+CMD ["sh", "-c", "/wait-for-it.sh plasmic-db 5432 -- node test-db-connection.js && echo 'Database is ready!' && npx typeorm migration:run -d /app/data-source.ts && yarn backend"]
