@@ -1,6 +1,6 @@
 module.exports = {
   "type": "postgres",
-  "host": "plasmic-db",
+  "host": "localhost",
   "username": "wab",
   "database": "wab",
   "password": "SEKRET",

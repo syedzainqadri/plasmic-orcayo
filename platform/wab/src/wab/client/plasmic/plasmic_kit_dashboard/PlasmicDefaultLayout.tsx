@@ -279,7 +279,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
             href={"/"}
             platform={"react"}
           >
-            <img src={logo} style={{width: '150px'}} alt="img" />
+            <h2 style={{marginBottom: 0, color: 'black'}}>Landing Page Builder</h2>
           </PlasmicLink__>
           <Stack__
             as={"div"}
@@ -375,7 +375,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
           data-plasmic-override={overrides.wrapper}
           className={classNames(projectcss.all, sty.wrapper)}
         >
-          <aside
+          {/* <aside
             data-plasmic-name={"sidebar"}
             data-plasmic-override={overrides.sidebar}
             className={classNames(projectcss.all, sty.sidebar, {
@@ -435,7 +435,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
               >
                 {"All projects"}
               </NavButton>
-              {/* <NavButton
+              <NavButton
                 data-plasmic-name={"myProjectsButton"}
                 data-plasmic-override={overrides.myProjectsButton}
                 className={classNames("__wab_instance", sty.myProjectsButton, {
@@ -470,7 +470,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 }
               >
                 {"My Playground"}
-              </NavButton> */}
+              </NavButton>
               <NavSeparator
                 className={classNames(
                   "__wab_instance",
@@ -693,7 +693,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 {"kim23"}
               </NavButton>
             </Stack__>
-          </aside>
+          </aside> */}
           <main
             data-plasmic-name={"main"}
             data-plasmic-override={overrides.main}
@@ -705,6 +705,7 @@ function PlasmicDefaultLayout__RenderFunc(props: {
                 "allProjects"
               ),
             })}
+            style={{margin: 0}}
           >
             {renderPlasmicSlot({
               defaultContents: null,

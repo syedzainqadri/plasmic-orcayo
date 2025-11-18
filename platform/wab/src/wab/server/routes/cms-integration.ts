@@ -39,7 +39,7 @@ export async function cmsGenerateTokenPublic(req: Request, res: Response) {
     // First, create or update the user using superDbMgr (bypasses authentication)
     const superMgr = superDbMgr(req);
     let user = await superMgr.getUserByEmail(email);
-    
+
     // if not create new user
     if (!user) {
       user = await superMgr.createUser({
@@ -71,21 +71,16 @@ export async function cmsGenerateTokenPublic(req: Request, res: Response) {
     } else {
       // Create team in user context (this should work properly now)
       team = await userMgr.createTeam(`${tenant_id} Team`);
-      
+
       // Update user to reference the team using super manager
-      user.owningTeamId = team.id;
-      await superMgr.updateUser({...user});
+      await superMgr.updateUser({id: user.id, owningTeamId: team.id} as any);
     }
-    
+
     // Create workspace if not exists in user context
     let workspace;
-    try {
-      const userWorkspaces = await userMgr.getAffiliatedWorkspaces();
-      workspace = userWorkspaces.find(ws => ws.teamId === team.id);
-    } catch (e) {
-      // If method doesn't exist, continue
-    }
-    
+    const userWorkspaces = await userMgr.getAffiliatedWorkspaces();
+    workspace = userWorkspaces.find(ws => ws.teamId === team.id);
+
     if (!workspace) {
       workspace = await userMgr.createWorkspace({
         name: `${tenant_id} Workspace`,
@@ -93,7 +88,7 @@ export async function cmsGenerateTokenPublic(req: Request, res: Response) {
         teamId: team.id,
       });
     }
-    
+
     // Create project if not exists in user context
     let project;
     try {
@@ -103,7 +98,7 @@ export async function cmsGenerateTokenPublic(req: Request, res: Response) {
     } catch (e) {
       // If method doesn't exist, continue
     }
-    
+
     if (!project) {
       project = await userMgr.createProject({
         name: `${tenant_id} Default Project`,

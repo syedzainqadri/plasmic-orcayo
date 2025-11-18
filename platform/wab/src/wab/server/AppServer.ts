@@ -1850,7 +1850,7 @@ export function addMainAppServerRoutes(
   app.post("/api/v1/cms-integration/generate-token", withNext(cmsGenerateTokenPublic));
   app.post("/api/v1/cms-integration/verify-user", safeCast<RequestHandler>(authRoutes.teamApiUserAuth), withNext(cmsVerifyUser));
   app.get("/api/v1/cms-integration/current-user", jwtAuthMiddleware, withNext(cmsGetCurrentUser));
-  
+
   // Simplified user creation and authentication routes (ID-only)
   app.post("/api/v1/cms-integration/create-user", withNext(cmsCreateUserWithIdOnly));
   app.post("/api/v1/cms-integration/authenticate-user", withNext(cmsAuthenticateUserById));
@@ -1933,6 +1933,23 @@ export async function createApp(
 ): Promise<{ app: express.Application }> {
   const app = express();
 
+  // Configure CORS to allow requests from any origin while supporting credentials
+  // This is important for allowing live websites to access the localhost backend
+  app.use(
+    cors({
+      origin: "*",
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: "*",
+      credentials: true,
+    })
+  );
+  app.use((req, res, next) => {
+    res.setHeader("X-Frame-Options", "ALLOWALL");
+    res.setHeader("Content-Security-Policy", "frame-ancestors *");
+    next();
+  });
+  app.options("*", cors());
+
   app.set("port", config.port || process.env.BACKEND_PORT || 3004);
   app.set("name", name);
 
@@ -2003,8 +2020,7 @@ export async function createApp(
   // Don't leak infra info
   app.disable("x-powered-by");
   logger().info(
-    `Starting server with heap memory ${
-      v8.getHeapStatistics().total_available_size / 1024 / 1024
+    `Starting server with heap memory ${v8.getHeapStatistics().total_available_size / 1024 / 1024
     }MB`
   );
 
@@ -2067,7 +2083,7 @@ export function makeExpressSessionMiddleware(config: Config) {
       cleanupLimit: 0,
       // By not using a subquery, maybe less likely for deadlock
       limitSubquery: false,
-      onError: () => {},
+      onError: () => { },
       //ttl: 86400,
     }).connect(getConnection().getRepository(ExpressSession)),
   });
