@@ -1,40 +1,60 @@
 version: '3.8'
 
 services:
-  # Plasmic WAB (Web App Builder) - Production
+  # Plasmic application service (production)
   app:
     build:
       context: .
       dockerfile: platform/wab/Dockerfile
+      target: production  # Use the production stage from multi-stage Dockerfile
     restart: always
-    volumes:
-      # For production, we don't need to mount source code for development
-      # Only mount logs or configuration files if needed
-      - plasmic_logs:/app/logs
-    ports:
-      - "3003:3003"
-      - "3004:3004"
-      - "3005:3005"
     environment:
-      # Database configuration for remote connection
-      - DATABASE_URI=postgresql://wab:SEKRET@142.44.136.233:5433/plasmic-db
-      - WAB_DBHOST=142.44.136.233
-      - WAB_DBPORT=5433
-      - WAB_DBUSER=wab
-      - WAB_DBPASSWORD=SEKRET
-      - WAB_DBNAME=plasmic-db
+      - DATABASE_URL=${DATABASE_URL}
+      - WAB_DBHOST=${WAB_DBHOST}
+      - WAB_DBNAME=${WAB_DBNAME}
+      - WAB_DBPASSWORD=${WAB_DBPASSWORD}
+      - WAB_DBUSER=${WAB_DBUSER}
+      - WAB_DBPORT=${WAB_DBPORT}
+      - REDIS_URL=${REDIS_URL}
       - NODE_ENV=production
-      - PUBLIC_URL=http://your-production-domain.com
-      - SESSION_SECRET=your-production-session-secret-key
+      - CMS_INTEGRATION_API_KEY=${CMS_INTEGRATION_API_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost}
       - PLASMIC_DEPLOYMENT_ENV=production
-    # Run migration command before starting the main application
-    command: sh -c "sleep 10 && cd /app/platform/wab && yarn typeorm migration:run && yarn backend"
-    healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:3004/api/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+    ports:
+      - "3003:3003"  # Frontend
+      - "3004:3004"  # Backend
+      - "3005:3005"  # Host server
+    volumes:
+      # For production, we'll use only necessary volumes
+      - app_logs:/app/logs
+    networks:
+      - plasmic-network
+    # Set resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+          cpus: '3'
+        reservations:
+          memory: 2G
+          cpus: '1'
+    # Run with proper production command - include testing steps for db connectivity
+    command: >
+      sh -c "
+        cd /app/platform/wab && ls -la && pwd &&
+        echo 'Environment variables:' && env | grep DB ||
+        echo 'Checking dependencies and running database connectivity test...' && 
+        node test-db-connection.js &&
+        echo 'Database is ready, running migrations...' &&
+        yarn run-ts -- run-migrations.ts &&
+        echo 'Migrations completed, starting Plasmic in production mode...' &&
+        yarn backend
+      "
 
 volumes:
-  plasmic_logs:
+  app_logs:
+
+networks:
+  plasmic-network:
+    driver: bridge

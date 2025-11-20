@@ -256,6 +256,24 @@ The forum is also easily searchable for all previously asked questions and discu
 Both the docs and forum are indexed by search engines!
 Search both by including “plasmic” in your query.
 
+## Deployment
+
+For production and development deployments, see our [Improved Deployment Guide](DEPLOYMENT_GUIDE.md).
+
+Quick start for local development:
+```bash
+# Setup environment
+./deploy-plasmic.sh setup
+
+# Start local development
+./deploy-plasmic.sh start local
+```
+
+The application will be available at:
+- Web App Builder: http://localhost:3003
+- Backend API: http://localhost:3004
+- Additional services: http://localhost:3005
+
 ## License
 
 All content outside of `platform/` is licensed under the MIT license--see LICENSE.md.

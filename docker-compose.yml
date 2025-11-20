@@ -1,3 +1,20 @@
+# services:
+#   # PostgreSQL database
+#   plasmic-db:
+#     image: postgres:15
+#     restart: always
+#     environment:
+#       - POSTGRES_PASSWORD=SEKRET
+#     ports:
+#       - "5433:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#       - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U postgres"]
+#       interval: 5s
+#       timeout: 10s
+#       retries: 5
 services:
   # PostgreSQL database
   plasmic-db:
@@ -18,31 +35,43 @@ services:
       timeout: 10s
       retries: 10
       start_period: 30s
+    networks:
+      default:
+        aliases:
+          - db  # Allow access via both 'plasmic-db' and 'db'
 
   # Plasmic WAB (Web App Builder)
   app:
     build:
       context: .
-      dockerfile: Dockerfile.fixed
-    command: # Override the default dockerfile startup command here for debugging purpose
-     - |
-      export YARN_CACHE_FOLDER="/tmp/yarn-cache-$(id -u)" && \
-      # Wait for database to be ready before running migrations \
-      until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do \
-        echo "Waiting for plasmic-db database..."; \
-        sleep 2; \
-      done && \
-      cd /plasmic/platform/wab && \
-      # Use the environment variables directly \
-      export TYPEORM_HOST=plasmic-db && \
-      export TYPEORM_USERNAME=wab && \
-      export TYPEORM_PASSWORD=SEKRET && \
-      export TYPEORM_DATABASE=wab && \
-      export TYPEORM_PORT=5432 && \
-      npx typeorm migration:run && \
-      yarn seed && \
-      cd /plasmic && \
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
+    command: # Override the default dockerfile startup command here for production
+    - /bin/sh
+    - -c
+    - |
+      export PGPASSWORD=SEKRET &&
+      cd /plasmic/platform/wab &&
+      # Wait for database to be ready before running migrations
+      until pg_isready -h plasmic-db -p 5432 -U wab -d wab; do
+        echo "Waiting for plasmic-db database...";
+        sleep 2;
+      done &&
+      # Check if ormconfig.json exists in the current directory
+      if [ ! -f ormconfig.json ]; then
+        echo "ormconfig.json not found in $(pwd)"
+        echo "Creating default ormconfig.json with correct database settings"
+        echo '{"type": "postgres", "host": "plasmic-db", "port": 5432, "username": "wab", "password": "SEKRET", "database": "wab", "synchronize": false, "dropSchema": false, "logging": false, "entities": ["src/wab/server/entities/**/*.ts"], "migrations": ["src/wab/server/migrations/**/*.ts"], "subscribers": ["src/wab/server/subscribers/**/*.ts"], "cli": {"entitiesDir": "src/wab/server/entities", "migrationsDir": "src/wab/server/migrations", "subscribersDir": "src/wab/server/subscribers"}}' > ormconfig.json
+      else
+        # Modify ormconfig.json in a safe way
+        cp ormconfig.json tmp_ormconfig.json &&
+        jq '(.host = "plasmic-db") | (.password //= "SEKRET")' tmp_ormconfig.json > ormconfig.json &&
+        rm tmp_ormconfig.json
+      fi &&
+      yarn typeorm migration:run &&
+      yarn seed &&
+      cd /plasmic &&
       yarn dev
+    volumes:
       # 1. Mount your local source code into the container
       - .:/plasmic
       # 2. Use named volumes to preserve built container files from being overwritten by unbuilt local code
@@ -74,12 +103,9 @@ services:
       plasmic-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/wab  # Use port 5432 and correct database name
-      - WAB_DBHOST=plasmic-db
-      - WAB_DBUSER=wab
+      - DATABASE_URI=postgres://wab:SEKRET@plasmic-db:5432/wab
+      - WAB_DBNAME=plasmic-db
       - WAB_DBPASSWORD=SEKRET
-      - WAB_DBNAME=wab
-      - WAB_DBPORT=5432
       - NODE_ENV=development
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true

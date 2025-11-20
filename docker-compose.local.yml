@@ -1,32 +1,15 @@
 services:
-  # PostgreSQL database
-  plasmic-db:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_DB: wab
-      POSTGRES_USER: wab
-      POSTGRES_PASSWORD: SEKRET
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./platform/wab/tools/docker-dev/db-setup.bash:/docker-entrypoint-initdb.d/db-setup.sh
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wab -d wab"]
-      interval: 5s
-      timeout: 10s
-      retries: 10
-      start_period: 30s
-
   # Plasmic WAB (Web App Builder)
-  app:
+  plasmic-wab:
     build:
       context: .
-      dockerfile: Dockerfile.fixed
+      dockerfile: ./platform/wab/tools/docker-dev/Dockerfile.dev.aio
     command: # Override the default dockerfile startup command here for debugging purpose
-     - |
-      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' ormconfig.json > tmp.json && mv tmp.json ormconfig.json && \
+    - |
+      # Continue with original command
+      cd /plasmic && \
+      jq '(.host = "plasmic-db") | (.password //= "SEKRET")' platform/wab/ormconfig.json > /tmp/tmp.json && \
+      mv /tmp/tmp.json platform/wab/ormconfig.json && \
       yarn typeorm migration:run && \
       yarn seed && \
       cd /plasmic && \
@@ -59,17 +42,19 @@ services:
       - "3004:3004"
       - "3005:3005"
       - "9229:9229"
-    depends_on:
-      plasmic-db:
-        condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://wab:SEKRET@plasmic-db:5432/wab  # Use port 5432 and correct database name
-      - WAB_DBHOST=plasmic-db
-      - WAB_DBUSER=wab
-      - WAB_DBPASSWORD=SEKRET
-      - WAB_DBNAME=wab
-      - WAB_DBPORT=5432
-      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
+      - WAB_DBHOST=${WAB_DBHOST}
+      - WAB_DBNAME=${WAB_DBNAME}
+      - WAB_DBPASSWORD=${WAB_DBPASSWORD}
+      - WAB_DBUSER=${WAB_DBUSER}
+      - WAB_DBPORT=${WAB_DBPORT}
+      - REDIS_URL=${REDIS_URL}
+      - NODE_ENV=production
+      - CMS_INTEGRATION_API_KEY=${CMS_INTEGRATION_API_KEY}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - PUBLIC_URL=${PUBLIC_URL:-http://localhost}
+      - PLASMIC_DEPLOYMENT_ENV=production
       # This environment variable makes file watching more reliable.
       - CHOKIDAR_USEPOLLING=true
     tty: true
@@ -77,6 +62,7 @@ services:
 
 volumes:
   postgres_data:
+  minio_data:
   plasmic_node_modules:
   plasmic_wab_node_modules:
   plasmic_sub_node_modules:
@@ -86,8 +72,8 @@ volumes:
   plasmic_loader_bundle_env_node_modules:
   plasmic_loader_html_hydrate_node_modules:
   plasmic_playwright_cache:
-  plasmic_generated_styles:
   plasmic_public:
   plasmic_wab_client:
   plasmic_wab_gen:
   plasmic_wab_shared_model:
+  plasmic_generated_styles:
